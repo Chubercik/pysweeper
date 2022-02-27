@@ -18,8 +18,8 @@ scale = 2
 
 # rotation is weird so I'm not doing it rn
 
-test_font = pygame.font.Font("fonts/minecraft_font/minecraft_regular.otf", 20)
-text_surface = test_font.render("Hello World!", True, (0, 0, 0))
+test_font = pygame.font.Font("fonts/minecraft_regular.ttf", 20)
+text_surface = test_font.render("Hello World!", False, (0, 0, 0))
 
 while True:
     for event in pygame.event.get():
