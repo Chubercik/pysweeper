@@ -42,36 +42,39 @@ smiley_wow_sprite = pygame.image.load("textures/smiley_wow.png")
 smiley_yeah_sprite = pygame.image.load("textures/smiley_yeah.png")
 smiley_sprite = pygame.image.load("textures/smiley.png")
 
-sprites = {
-    "bomb_explode": bomb_explode_sprite,
-    "bomb_no": bomb_no_sprite,
-    "bomb": bomb_sprite,
-    "clock_null": clock_null_sprite,
-    "clock_zero": clock_zero_sprite,
-    "clock_one": clock_one_sprite,
-    "clock_two": clock_two_sprite,
-    "clock_three": clock_three_sprite,
-    "clock_four": clock_four_sprite,
-    "clock_five": clock_five_sprite,
-    "clock_six": clock_six_sprite,
-    "clock_seven": clock_seven_sprite,
-    "clock_eight": clock_eight_sprite,
-    "clock_nine": clock_nine_sprite,
-    "one": one_sprite,
-    "two": two_sprite,
-    "three": three_sprite,
-    "four": four_sprite,
-    "five": five_sprite,
-    "six": six_sprite,
-    "seven": seven_sprite,
-    "eight": eight_sprite,
-    "flag": flag_sprite,
-    "question_mark": question_mark_sprite,
-    "smiley_rip": smiley_rip_sprite,
-    "smiley_wow": smiley_wow_sprite,
-    "smiley_yeah": smiley_yeah_sprite,
-    "smiley": smiley_sprite
-}
 
-for i, sprite in sprites.items():
-    sprite = sprite.convert_alpha()
+class Sprites:
+    def __init__(self):
+        self.sprites = {
+            "bomb_explode": bomb_explode_sprite,
+            "bomb_no": bomb_no_sprite,
+            "bomb": bomb_sprite,
+            "clock_null": clock_null_sprite,
+            "clock_zero": clock_zero_sprite,
+            "clock_one": clock_one_sprite,
+            "clock_two": clock_two_sprite,
+            "clock_three": clock_three_sprite,
+            "clock_four": clock_four_sprite,
+            "clock_five": clock_five_sprite,
+            "clock_six": clock_six_sprite,
+            "clock_seven": clock_seven_sprite,
+            "clock_eight": clock_eight_sprite,
+            "clock_nine": clock_nine_sprite,
+            "one": one_sprite,
+            "two": two_sprite,
+            "three": three_sprite,
+            "four": four_sprite,
+            "five": five_sprite,
+            "six": six_sprite,
+            "seven": seven_sprite,
+            "eight": eight_sprite,
+            "flag": flag_sprite,
+            "question_mark": question_mark_sprite,
+            "smiley_rip": smiley_rip_sprite,
+            "smiley_wow": smiley_wow_sprite,
+            "smiley_yeah": smiley_yeah_sprite,
+            "smiley": smiley_sprite
+        }
+
+        for i, sprite in self.sprites.items():
+            sprite = sprite.convert_alpha()

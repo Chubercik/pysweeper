@@ -1,7 +1,9 @@
 import random
 from typing import Tuple
 
-from sprites import pygame, screen, sprites
+from sprites import Sprites, pygame, screen
+
+sprites = Sprites().sprites
 
 
 class Block:

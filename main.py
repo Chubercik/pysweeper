@@ -7,7 +7,6 @@ pygame.display.set_caption("pysweeper")
 pygame.display.set_icon(pygame.image.load("textures/bomb.png"))
 clock = pygame.time.Clock()
 
-
 board = Board(20, 20, 40)
 
 while True:
@@ -24,8 +23,10 @@ while True:
     mouse_x = mouse_pos[0] // 32
     mouse_y = mouse_pos[1] // 32
 
-    m_pos_font = pygame.font.SysFont("Helvetica", 20)
-    m_pos_text = m_pos_font.render(f"{mouse_x}, {mouse_y}", True, (0, 0, 0))
+    text_font = pygame.font.SysFont("Helvetica", 20)
+    m_pos_text = text_font.render(f"{mouse_x}, {mouse_y}",
+                                  True,
+                                  (0, 0, 0))
 
     signal = pygame.Surface((32, 32))
     if mouse_x < board.width and mouse_y < board.height:
@@ -43,5 +44,10 @@ while True:
             signal.fill((0, 0, 255))
             screen.blit(signal, (704, 640))
 
+    fps_counter = text_font.render(f"FPS: {int(clock.get_fps())}",
+                                   True,
+                                   (0, 0, 0))
+    screen.blit(fps_counter, (640, 0))
+
     pygame.display.update()
-    clock.tick(30)
+    clock.tick(60)
