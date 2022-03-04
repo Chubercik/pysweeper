@@ -26,10 +26,10 @@ while True:
 
     m_pos_font = pygame.font.SysFont("Helvetica", 20)
     m_pos_text = m_pos_font.render(f"{mouse_x}, {mouse_y}", True, (0, 0, 0))
-    screen.blit(m_pos_text, (640, 640))
 
     signal = pygame.Surface((32, 32))
     if mouse_x < board.width and mouse_y < board.height:
+        screen.blit(m_pos_text, (640, 640))
         if pygame.mouse.get_pressed()[0]:
             board.reveal(mouse_x, mouse_y)
             signal.fill((0, 255, 0))

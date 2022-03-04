@@ -1,26 +1,7 @@
-import os
 import random
 from typing import Tuple
 
-os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = '1'
-
-import pygame  # noqa: E402
-
-smiley_sprite = pygame.image.load("textures/smiley.png")
-bomb_sprite = pygame.image.load("textures/bomb.png")
-flag_sprite = pygame.image.load("textures/flag.png")
-question_mark_sprite = pygame.image.load("textures/question_mark.png")
-
-one_sprite = pygame.image.load("textures/one.png")
-two_sprite = pygame.image.load("textures/two.png")
-three_sprite = pygame.image.load("textures/three.png")
-four_sprite = pygame.image.load("textures/four.png")
-five_sprite = pygame.image.load("textures/five.png")
-six_sprite = pygame.image.load("textures/six.png")
-seven_sprite = pygame.image.load("textures/seven.png")
-eight_sprite = pygame.image.load("textures/eight.png")
-
-screen = pygame.display.set_mode((736, 672))
+from sprites import pygame, screen, sprites
 
 
 class Block:
@@ -45,27 +26,27 @@ class Block:
                 wall.fill((100, 100, 100))
                 screen.blit(wall, (self.x + 1, self.y + 1))
             if self.is_bomb:
-                screen.blit(bomb_sprite, (self.x, self.y))
+                screen.blit(sprites["bomb"], (self.x, self.y))
             elif self.number == 1:
-                screen.blit(one_sprite, (self.x, self.y))
+                screen.blit(sprites["one"], (self.x, self.y))
             elif self.number == 2:
-                screen.blit(two_sprite, (self.x, self.y))
+                screen.blit(sprites["two"], (self.x, self.y))
             elif self.number == 3:
-                screen.blit(three_sprite, (self.x, self.y))
+                screen.blit(sprites["three"], (self.x, self.y))
             elif self.number == 4:
-                screen.blit(four_sprite, (self.x, self.y))
+                screen.blit(sprites["four"], (self.x, self.y))
             elif self.number == 5:
-                screen.blit(five_sprite, (self.x, self.y))
+                screen.blit(sprites["five"], (self.x, self.y))
             elif self.number == 6:
-                screen.blit(six_sprite, (self.x, self.y))
+                screen.blit(sprites["six"], (self.x, self.y))
             elif self.number == 7:
-                screen.blit(seven_sprite, (self.x, self.y))
+                screen.blit(sprites["seven"], (self.x, self.y))
             elif self.number == 8:
-                screen.blit(eight_sprite, (self.x, self.y))
+                screen.blit(sprites["eight"], (self.x, self.y))
         elif self.is_flagged:
-            screen.blit(flag_sprite, (self.x, self.y))
+            screen.blit(sprites["flag"], (self.x, self.y))
         elif self.is_question_mark:
-            screen.blit(question_mark_sprite, (self.x, self.y))
+            screen.blit(sprites["question_mark"], (self.x, self.y))
 
     def reveal(self) -> None:
         self.is_revealed = True
