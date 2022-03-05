@@ -9,6 +9,7 @@ sprites = Sprites().sprites
 class Block:
     def __init__(self) -> None:
         self.is_bomb = False
+        self.is_exploded = False
         self.is_flagged = False
         self.is_question_mark = False
         self.is_revealed = False
@@ -27,7 +28,9 @@ class Block:
             if self.number in range(9):
                 wall.fill((100, 100, 100))
                 screen.blit(wall, (self.x + 1, self.y + 1))
-            if self.is_bomb:
+            if self.is_exploded:
+                screen.blit(sprites["bomb_explode"], (self.x, self.y))
+            elif self.is_bomb:
                 screen.blit(sprites["bomb"], (self.x, self.y))
             elif self.number == 1:
                 screen.blit(sprites["one"], (self.x, self.y))
@@ -74,12 +77,18 @@ class Block:
     def set_bomb(self) -> None:
         self.is_bomb = True
 
+    def set_exploded(self) -> None:
+        self.is_exploded = True
+
     def set_position(self, x: int, y: int) -> None:
         self.x = x
         self.y = y
 
     def is_bomb(self) -> bool:
         return self.is_bomb
+
+    def is_exploded(self) -> bool:
+        return self.is_exploded
 
     def is_flagged(self) -> bool:
         return self.is_flagged
@@ -145,6 +154,11 @@ class Board:
                 self.board[y][x].draw()
 
     def reveal(self, x: int, y: int) -> None:
+        if self.board[y][x].is_bomb:
+            self.board[y][x].set_exploded()
+            for x in range(self.width):
+                for y in range(self.height):
+                    self.board[y][x].reveal()
         self.board[y][x].reveal()
         if self.board[y][x].get_number() == 0:
             for i in range(-1, 2):
