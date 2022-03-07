@@ -8,6 +8,9 @@ class Pysweeper:
         self.width = width
         self.height = height
         self.bombs = bombs
+        self.clicks = 0
+        self.flags = 0
+        self.question_marks = 0
         self.board = Board(width, height, bombs)
 
     def run(self):
@@ -15,6 +18,7 @@ class Pysweeper:
         pygame.display.set_caption("pysweeper")
         pygame.display.set_icon(pygame.image.load("textures/bomb.png"))
         clock = pygame.time.Clock()
+        pygame.display.set_mode(size=(32*self.width + 96, 32*self.height + 32))
 
         while True:
             for event in pygame.event.get():
@@ -37,24 +41,40 @@ class Pysweeper:
 
             signal = pygame.Surface((32, 32))
             if mouse_x < self.width and mouse_y < self.height:
-                screen.blit(m_pos_text, (640, 640))
+                screen.blit(m_pos_text, (32*self.width, 32*self.height))
                 if pygame.mouse.get_pressed()[0]:
+                    self.clicks += 1
                     self.board.reveal(mouse_x, mouse_y)
                     signal.fill((0, 255, 0))
-                    screen.blit(signal, (704, 640))
+                    screen.blit(signal, (32*self.width + 64, 32*self.height))
                 if pygame.mouse.get_pressed()[2]:
-                    self.board.board[mouse_y][mouse_x].flag()
+                    if self.board.board[mouse_y][mouse_x].is_flagged:
+                        self.flags -= 1
+                        self.board.board[mouse_y][mouse_x].unflag()
+                    else:
+                        self.flags += 1
+                        self.board.board[mouse_y][mouse_x].flag()
                     signal.fill((255, 0, 0))
-                    screen.blit(signal, (704, 640))
+                    screen.blit(signal, (32*self.width + 64, 32*self.height))
                 if pygame.mouse.get_pressed()[1]:
-                    self.board.board[mouse_y][mouse_x].question_mark()
-                    signal
-                    screen.blit(signal, (704, 640))
+                    if self.board.board[mouse_y][mouse_x].is_question_mark:
+                        self.question_marks -= 1
+                        self.board.board[mouse_y][mouse_x].unquestion_mark()
+                    else:
+                        self.question_marks += 1
+                        self.board.board[mouse_y][mouse_x].question_mark()
+                    signal.fill((0, 0, 255))
+                    screen.blit(signal, (32*self.width + 64, 32*self.height))
 
             fps_counter = text_font.render(f"FPS: {int(clock.get_fps())}",
                                            True,
                                            (0, 0, 0))
-            screen.blit(fps_counter, (640, 0))
+            screen.blit(fps_counter, (32*self.width, 0))
+
+            num_flags = text_font.render(f"Flags: {self.flags}",
+                                         True,
+                                         (0, 0, 0))
+            screen.blit(num_flags, (32*self.width, 32))
 
             pygame.display.update()
             clock.tick(60)

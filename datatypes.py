@@ -25,13 +25,14 @@ class Block:
         wall.fill((150, 150, 150))
         screen.blit(wall, (self.x + 1, self.y + 1))
         if self.is_revealed:
-            if self.number in range(9):
-                wall.fill((100, 100, 100))
-                screen.blit(wall, (self.x + 1, self.y + 1))
+            wall.fill((100, 100, 100))
+            screen.blit(wall, (self.x + 1, self.y + 1))
             if self.is_exploded:
                 screen.blit(sprites["bomb_explode"], (self.x, self.y))
             elif self.is_bomb:
                 screen.blit(sprites["bomb"], (self.x, self.y))
+            elif self.is_flagged:
+                screen.blit(sprites["bomb_no"], (self.x, self.y))
             elif self.number == 1:
                 screen.blit(sprites["one"], (self.x, self.y))
             elif self.number == 2:
@@ -123,6 +124,8 @@ class Board:
 
     def generate_bombs(self) -> None:
         bomb_count = self.bomb_count
+        if bomb_count > self.width * self.height:
+            bomb_count = self.width * self.height
         while bomb_count > 0:
             x = random.randint(0, self.width - 1)
             y = random.randint(0, self.height - 1)

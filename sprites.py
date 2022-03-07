@@ -4,7 +4,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = '1'
 
 import pygame  # noqa: E402
 
-screen = pygame.display.set_mode(size=(736, 672),
+screen = pygame.display.set_mode(size=(320, 320),
                                  flags=pygame.RESIZABLE,
                                  vsync=True)
 
