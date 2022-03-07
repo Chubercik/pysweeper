@@ -78,3 +78,11 @@ class Sprites:
 
         for i, sprite in self.sprites.items():
             sprite = sprite.convert_alpha()
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()

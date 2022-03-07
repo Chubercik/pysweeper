@@ -169,3 +169,11 @@ class Board:
                         and not self.board[y + j][x + i].is_revealed
                     ):
                         self.reveal(x + i, y + j)
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
