@@ -198,7 +198,7 @@ class Button:
                                              self._height - 10))
         wall.fill((250, 250, 250))
         screen.blit(wall, (self._x + 5, self._y + 5))
-        font = pygame.font.SysFont("Helvetica", 20)
+        font = pygame.font.Font("fonts/minecraft_regular.ttf", 16)
         text = font.render(self._text, True, (0, 0, 0))
         screen.blit(text, (self._x + self._width / 2 - text.get_width() / 2,
                            self._y + self._height / 2 - text.get_height() / 2))
