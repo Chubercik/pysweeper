@@ -1,6 +1,6 @@
 from sys import exit
 
-from utilities import Board, Button, pygame, screen
+from utilities import Board, Button, pygame, screen, sec_to_time
 
 
 class Pysweeper:
@@ -12,6 +12,7 @@ class Pysweeper:
         self._flags = 0
         self._question_marks = 0
         self._board = Board(width, height, bombs)
+        self._time = 0
 
     def run(self) -> None:
         pygame.init()
@@ -76,6 +77,11 @@ class Pysweeper:
                                           (0, 0, 0))
             screen.blit(num_clicks, (32*self._width + 8, 72))
 
+            time = text_font.render(f"Time: {sec_to_time(self._time)}",
+                                    True,
+                                    (0, 0, 0))
+            screen.blit(time, (32*self._width + 8, 104))
+
             if self._board._game_over == "LOSE":
                 dim_light = pygame.Surface((32*self._width, 32*self._height))
                 dim_light.set_alpha(100)
@@ -89,6 +95,9 @@ class Pysweeper:
                 button.draw()
                 if button.is_clicked(mouse_pos):
                     self.__init__(self._width, self._height, self._bombs)
+
+            if self._board._game_over is None:
+                self._time += 1/60
 
             pygame.display.update()
             clock.tick(60)

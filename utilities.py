@@ -211,6 +211,16 @@ class Button:
         return False
 
 
+def sec_to_time(sec: int) -> str:
+    m = int(sec // 60)
+    s = round(sec % 60, 2)
+    if m < 10:
+        m = f"0{m}"
+    if s < 10:
+        s = f"0{s}"
+    return f"{m}:{s}"
+
+
 def main():
     pass
 
