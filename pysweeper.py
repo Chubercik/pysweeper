@@ -16,13 +16,18 @@ class Pysweeper:
 
     def run(self) -> None:
         pygame.init()
+        pygame.mixer.init()
+
+        play_sound = True
+
         pygame.display.set_caption("pysweeper")
         pygame.display.set_icon(pygame.image.load("textures/bomb.png"))
-        clock = pygame.time.Clock()
         pygame.display.set_mode(size=(32*self._width + 200,
                                       32*self._height + 200),
                                 flags=pygame.RESIZABLE,
                                 vsync=True)
+
+        clock = pygame.time.Clock()
 
         while True:
             screen.fill((255, 255, 255))
@@ -91,6 +96,10 @@ class Pysweeper:
                                + num_clicks.get_width(), 40))
 
             if self._board._game_over == "LOSE":
+                if play_sound:
+                    pygame.mixer.music.load("sounds/explosion.mp3")
+                    pygame.mixer.music.play()
+                    play_sound = False
                 dim_light = pygame.Surface((32*self._width, 32*self._height))
                 dim_light.set_alpha(100)
                 dim_light.fill((0, 0, 0))
@@ -106,6 +115,7 @@ class Pysweeper:
                 button.draw()
                 if button.is_clicked(mouse_pos):
                     self.__init__(self._width, self._height, self._bombs)
+                    play_sound = True
 
             if self._board._game_over is None:
                 self._time += 1/60
