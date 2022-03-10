@@ -116,9 +116,15 @@ class Board:
         self._width = width
         self._height = height
         self._bomb_count = bomb_count
-        for i, y in enumerate(range(0, self._height*32, 32)):
+        self._left_offset = 100
+        self._top_offset = 100
+        for i, y in enumerate(range(self._left_offset,
+                                    self._left_offset + self._height*32,
+                                    32)):
             self._board.append([])
-            for j, x in enumerate(range(0, self._width*32, 32)):
+            for j, x in enumerate(range(self._top_offset,
+                                        self._top_offset + self._width*32,
+                                        32)):
                 self._board[i].append(Block())
                 self._board[i][j].set_position(x, y)
 

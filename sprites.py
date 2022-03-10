@@ -1,6 +1,18 @@
+import ctypes
 import os
 
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = '1'
+
+# as of right now, this will only
+# work with a board of size 20x20
+# and offsets of 100 pixels
+position = (screensize[0] // 2 - 420,
+            screensize[1] // 2 - 420)
+
+os.environ["SDL_VIDEO_WINDOW_POS"] = f"{str(position[0])}, {str(position[1])}"
 
 import pygame  # noqa: E402
 

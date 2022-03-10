@@ -19,8 +19,8 @@ class Pysweeper:
         pygame.display.set_caption("pysweeper")
         pygame.display.set_icon(pygame.image.load("textures/bomb.png"))
         clock = pygame.time.Clock()
-        pygame.display.set_mode(size=(32*self._width + 160,
-                                      32*self._height + 32),
+        pygame.display.set_mode(size=(32*self._width + 200,
+                                      32*self._height + 200),
                                 flags=pygame.RESIZABLE,
                                 vsync=True)
 
@@ -30,8 +30,8 @@ class Pysweeper:
             self._board.draw()
 
             mouse_pos = pygame.mouse.get_pos()
-            mouse_x = mouse_pos[0] // 32
-            mouse_y = mouse_pos[1] // 32
+            mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
+            mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
 
             text_font = pygame.font.Font("fonts/minecraft_regular.ttf", 16)
 
@@ -41,7 +41,9 @@ class Pysweeper:
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if mouse_x < self._width and \
+                       mouse_x >= 0 and \
                        mouse_y < self._height and \
+                       mouse_y >= 0 and \
                        self._board._game_over is None:
                         block = self._board._board[mouse_y][mouse_x]
                         if event.button == 1 and not block.is_revealed():
@@ -65,30 +67,39 @@ class Pysweeper:
             fps_counter = text_font.render(f"FPS: {int(clock.get_fps())}",
                                            True,
                                            (0, 0, 0))
-            screen.blit(fps_counter, (32*self._width + 8, 8))
+            screen.blit(fps_counter, (8 + self._board._left_offset, 40))
 
             num_flags = text_font.render(f"Bombs: {self._bombs - self._flags}",
                                          True,
                                          (0, 0, 0))
-            screen.blit(num_flags, (32*self._width + 8, 40))
+            screen.blit(num_flags, (40 + self._board._left_offset
+                                    + fps_counter.get_width(), 40))
 
             num_clicks = text_font.render(f"Clicks: {self._clicks}",
                                           True,
                                           (0, 0, 0))
-            screen.blit(num_clicks, (32*self._width + 8, 72))
+            screen.blit(num_clicks, (72 + self._board._left_offset
+                                     + fps_counter.get_width()
+                                     + num_flags.get_width(), 40))
 
             time = text_font.render(f"Time: {sec_to_time(self._time)}",
                                     True,
                                     (0, 0, 0))
-            screen.blit(time, (32*self._width + 8, 104))
+            screen.blit(time, (104 + self._board._left_offset
+                               + fps_counter.get_width()
+                               + num_flags.get_width()
+                               + num_clicks.get_width(), 40))
 
             if self._board._game_over == "LOSE":
                 dim_light = pygame.Surface((32*self._width, 32*self._height))
                 dim_light.set_alpha(100)
                 dim_light.fill((0, 0, 0))
-                screen.blit(dim_light, (0, 0))
-                button = Button(x=(32*self._width - 128)/2,
-                                y=(32*self._height - 64)/2,
+                screen.blit(dim_light, (self._board._left_offset,
+                                        self._board._top_offset))
+                button = Button(x=((32*self._width - 128)/2
+                                   + self._board._left_offset),
+                                y=((32*self._height - 64)/2
+                                   + self._board._top_offset),
                                 width=128,
                                 height=64,
                                 text="Restart")
