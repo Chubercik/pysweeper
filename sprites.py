@@ -16,9 +16,7 @@ os.environ["SDL_VIDEO_WINDOW_POS"] = f"{str(position[0])}, {str(position[1])}"
 
 import pygame  # noqa: E402
 
-screen = pygame.display.set_mode(size=(320, 320),
-                                 flags=pygame.RESIZABLE,
-                                 vsync=True)
+screen = pygame.display.set_mode(flags=pygame.HIDDEN)
 
 bomb_explode_sprite = pygame.image.load("textures/bomb_explode.png")
 bomb_no_sprite = pygame.image.load("textures/bomb_no.png")

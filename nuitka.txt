@@ -1,0 +1,2 @@
+https://nuitka.net/doc/user-manual.html
+nuitka main.py --standalone --include-data-dir=../pysweeper/textures=textures --include-data-dir=../pysweeper/fonts=fonts --include-data-dir=../pysweeper/sounds=sounds --windows-icon-from-ico=../pysweeper/textures/bomb.png --windows-disable-console
