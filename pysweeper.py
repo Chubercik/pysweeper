@@ -1,6 +1,6 @@
 from sys import exit
 
-from utilities import Board, Button, pygame, screen, sec_to_time
+from utilities import Board, Button, Smiley, pygame, screen, sec_to_time
 
 
 class Pysweeper:
@@ -12,6 +12,9 @@ class Pysweeper:
         self._flags = 0
         self._question_marks = 0
         self._board = Board(width, height, bombs)
+        self._smiley = Smiley(x=(self._board._left_offset - 32
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
         self._time = 0
 
     def run(self) -> None:
@@ -33,6 +36,7 @@ class Pysweeper:
             screen.fill((255, 255, 255))
 
             self._board.draw()
+            self._smiley.draw(screen)
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_x = (mouse_pos[0] - self._board._left_offset) // 32

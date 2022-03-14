@@ -186,6 +186,59 @@ class Board:
                         self.reveal(x + i, y + j)
 
 
+class Smiley:
+    def __init__(self, x: int, y: int) -> None:
+        self._x = x
+        self._y = y
+        self._is_in_awe = False
+        self._is_dead = False
+        self._is_cool = False
+        self._sprite = None
+
+    def draw(self, screen: pygame.Surface) -> None:
+        if self._is_in_awe:
+            self._sprite = sprites["smiley_wow"]
+        elif self._is_dead:
+            self._sprite = sprites["smiley_rip"]
+        elif self._is_cool:
+            self._sprite = sprites["smiley_yeah"]
+        else:
+            self._sprite = sprites["smiley"]
+        self._sprite = pygame.transform.scale(self._sprite, (64, 64))
+        screen.blit(self._sprite, (self._x, self._y))
+
+    def set_in_awe(self) -> None:
+        self._is_in_awe = True
+        self._is_dead = False
+        self._is_cool = False
+
+    def set_dead(self) -> None:
+        self._is_in_awe = False
+        self._is_dead = True
+        self._is_cool = False
+
+    def set_cool(self) -> None:
+        self._is_in_awe = False
+        self._is_dead = False
+        self._is_cool = True
+
+    def is_in_awe(self) -> bool:
+        return self._is_in_awe
+
+    def is_dead(self) -> bool:
+        return self._is_dead
+
+    def is_cool(self) -> bool:
+        return self._is_cool
+
+    def set_position(self, x: int, y: int) -> None:
+        self._x = x
+        self._y = y
+
+    def get_position(self) -> Tuple[int]:
+        return (self._x, self._y)
+
+
 class Button:
     def __init__(self, x: int, y: int,
                  width: int, height: int,
