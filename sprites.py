@@ -1,5 +1,6 @@
 import ctypes
 import os
+from typing import Tuple
 
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -17,6 +18,31 @@ os.environ["SDL_VIDEO_WINDOW_POS"] = f"{str(position[0])}, {str(position[1])}"
 import pygame  # noqa: E402
 
 screen = pygame.display.set_mode(flags=pygame.HIDDEN)
+
+
+def img_outline(img: pygame.Surface,
+                color: Tuple[int, int, int],
+                loc: Tuple[int, int],
+                screen: pygame.Surface) -> None:
+    mask = pygame.mask.from_surface(img)
+    mask_outline = mask.outline()
+    mask_surf = pygame.Surface(img.get_size())
+    for pixel in mask_outline:
+        mask_surf.set_at(pixel, color)
+    mask_surf.set_colorkey((0, 0, 0))
+    screen.blit(mask_surf, (loc[0] - 1, loc[1]))
+    screen.blit(mask_surf, (loc[0] + 1, loc[1]))
+    screen.blit(mask_surf, (loc[0], loc[1] - 1))
+    screen.blit(mask_surf, (loc[0], loc[1] + 1))
+
+
+def blit_sprite(sprite: pygame.Surface,
+                outline_color: Tuple[int, int, int],
+                location: Tuple[int, int],
+                screen: pygame.Surface) -> None:
+    img_outline(sprite, outline_color, location, screen)
+    screen.blit(sprite, location)
+
 
 bomb_explode_sprite = pygame.image.load("textures/bomb_explode.png")
 bomb_no_sprite = pygame.image.load("textures/bomb_no.png")
@@ -52,6 +78,8 @@ smiley_wow_sprite = pygame.image.load("textures/smiley_wow.png")
 smiley_yeah_sprite = pygame.image.load("textures/smiley_yeah.png")
 smiley_sprite = pygame.image.load("textures/smiley.png")
 
+tile = pygame.image.load("textures/tile.png")
+
 
 class Sprites:
     def __init__(self):
@@ -83,7 +111,8 @@ class Sprites:
             "smiley_rip": smiley_rip_sprite,
             "smiley_wow": smiley_wow_sprite,
             "smiley_yeah": smiley_yeah_sprite,
-            "smiley": smiley_sprite
+            "smiley": smiley_sprite,
+            "tile": tile
         }
 
         for i, sprite in self.sprites.items():

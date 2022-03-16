@@ -1,7 +1,7 @@
 import random
 from typing import Tuple
 
-from sprites import Sprites, pygame, screen
+from sprites import Sprites, blit_sprite, pygame, screen
 
 sprites = Sprites().sprites
 
@@ -22,10 +22,10 @@ class Block:
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
         wall = pygame.transform.scale(wall, (30, 30))
-        wall.fill((150, 150, 150))
+        wall.fill((170, 170, 170))
         screen.blit(wall, (self._x + 1, self._y + 1))
         if self.is_revealed():
-            wall.fill((100, 100, 100))
+            wall.fill((85, 85, 85))
             screen.blit(wall, (self._x + 1, self._y + 1))
             if self.is_exploded():
                 screen.blit(sprites["bomb_explode"], self.get_position())
@@ -37,25 +37,51 @@ class Block:
             elif self.is_flagged():
                 screen.blit(sprites["bomb_no"], self.get_position())
             elif self.get_number() == 1:
-                screen.blit(sprites["one"], self.get_position())
+                blit_sprite(sprites["one"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 2:
-                screen.blit(sprites["two"], self.get_position())
+                blit_sprite(sprites["two"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 3:
-                screen.blit(sprites["three"], self.get_position())
+                blit_sprite(sprites["three"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 4:
-                screen.blit(sprites["four"], self.get_position())
+                blit_sprite(sprites["four"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 5:
-                screen.blit(sprites["five"], self.get_position())
+                blit_sprite(sprites["five"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 6:
-                screen.blit(sprites["six"], self.get_position())
+                blit_sprite(sprites["six"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 7:
-                screen.blit(sprites["seven"], self.get_position())
+                blit_sprite(sprites["seven"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
             elif self.get_number() == 8:
-                screen.blit(sprites["eight"], self.get_position())
+                blit_sprite(sprites["eight"],
+                            (30, 30, 30),
+                            self.get_position(),
+                            screen)
         elif self.is_flagged():
             screen.blit(sprites["flag"], self.get_position())
         elif self.is_question_mark():
             screen.blit(sprites["question_mark"], self.get_position())
+        else:
+            screen.blit(sprites["tile"], self.get_position())
 
     def reveal(self) -> None:
         self._is_revealed = True
@@ -185,6 +211,19 @@ class Board:
                     ):
                         self.reveal(x + i, y + j)
 
+    def check_win(self) -> bool:
+        for y in range(self._height):
+            for x in range(self._width):
+                if not self._board[y][x].is_revealed() and not self._board[y][x].is_bomb():
+                    return False
+        if self._game_over is None:
+            self._game_over = "WIN"
+            for x in range(self._width):
+                for y in range(self._height):
+                    self._board[y][x].reveal()
+            return True
+        return False
+
 
 class Smiley:
     def __init__(self, x: int, y: int) -> None:
@@ -196,6 +235,8 @@ class Smiley:
         self._sprite = None
 
     def draw(self, screen: pygame.Surface) -> None:
+        screen.blit(pygame.transform.scale(sprites["tile"], (64, 64)),
+                    self.get_position())
         if self._is_in_awe:
             self._sprite = sprites["smiley_wow"]
         elif self._is_dead:
@@ -206,6 +247,11 @@ class Smiley:
             self._sprite = sprites["smiley"]
         self._sprite = pygame.transform.scale(self._sprite, (64, 64))
         screen.blit(self._sprite, (self._x, self._y))
+
+    def set_reset(self) -> None:
+        self._is_dead = False
+        self._is_in_awe = False
+        self._is_cool = False
 
     def set_in_awe(self) -> None:
         self._is_in_awe = True
@@ -239,45 +285,55 @@ class Smiley:
         return (self._x, self._y)
 
 
-class Button:
-    def __init__(self, x: int, y: int,
-                 width: int, height: int,
-                 text: str) -> None:
+class Timer:
+    def __init__(self, x: int, y: int) -> None:
         self._x = x
         self._y = y
-        self._width = width
-        self._height = height
-        self._text = text
+        self._number = 0
+        self._sprite = None
 
-    def draw(self) -> None:
-        wall = pygame.Surface((self._width, self._height))
+    def draw(self, screen: pygame.Surface) -> None:
+        wall = pygame.Surface((32, 64))
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
-        wall = pygame.transform.scale(wall, (self._width - 10,
-                                             self._height - 10))
-        wall.fill((250, 250, 250))
-        screen.blit(wall, (self._x + 5, self._y + 5))
-        font = pygame.font.Font("fonts/minecraft_regular.ttf", 16)
-        text = font.render(self._text, True, (0, 0, 0))
-        screen.blit(text, (self._x + self._width / 2 - text.get_width() / 2,
-                           self._y + self._height / 2 - text.get_height() / 2))
+        wall = pygame.transform.scale(wall, (30, 62))
+        wall.fill((170, 170, 170))
+        screen.blit(wall, (self._x + 1, self._y + 1))
+        if self._number == 0:
+            self._sprite = sprites["clock_zero"]
+        elif self._number == 1:
+            self._sprite = sprites["clock_one"]
+        elif self._number == 2:
+            self._sprite = sprites["clock_two"]
+        elif self._number == 3:
+            self._sprite = sprites["clock_three"]
+        elif self._number == 4:
+            self._sprite = sprites["clock_four"]
+        elif self._number == 5:
+            self._sprite = sprites["clock_five"]
+        elif self._number == 6:
+            self._sprite = sprites["clock_six"]
+        elif self._number == 7:
+            self._sprite = sprites["clock_seven"]
+        elif self._number == 8:
+            self._sprite = sprites["clock_eight"]
+        elif self._number == 9:
+            self._sprite = sprites["clock_nine"]
+        self._sprite = pygame.transform.scale(self._sprite, (32, 64))
+        screen.blit(self._sprite, (self._x, self._y))
 
-    def is_clicked(self, pos: Tuple[int]) -> bool:
-        if pos[0] > self._x and pos[0] < self._x + self._width:
-            if pos[1] > self._y and pos[1] < self._y + self._height:
-                if pygame.mouse.get_pressed()[0]:
-                    return True
-        return False
+    def set_number(self, number: int) -> None:
+        self._number = number
 
+    def get_number(self) -> int:
+        return self._number
 
-def sec_to_time(sec: int) -> str:
-    m = int(sec // 60)
-    s = round(sec % 60, 2)
-    if m < 10:
-        m = f"0{m}"
-    if s < 10:
-        s = f"0{s}"
-    return f"{m}:{s}"
+    def set_position(self, x: int, y: int) -> None:
+        self._x = x
+        self._y = y
+
+    def get_position(self) -> Tuple[int]:
+        return (self._x, self._y)
 
 
 def main():

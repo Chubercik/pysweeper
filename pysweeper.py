@@ -1,6 +1,6 @@
 from sys import exit
 
-from utilities import Board, Button, Smiley, pygame, screen, sec_to_time
+from utilities import Board, Smiley, Timer, pygame, screen
 
 
 class Pysweeper:
@@ -16,6 +16,29 @@ class Pysweeper:
                                  + 32*self._width//2),
                               y=(self._board._top_offset - 64))
         self._time = 0
+        self._timer_0 = Timer(x=(self._board._left_offset + 32
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer_1 = Timer(x=(self._board._left_offset + 64
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer_2 = Timer(x=(self._board._left_offset + 96
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer = [self._timer_0, self._timer_1, self._timer_2]
+        self._score_0 = Timer(x=(self._board._left_offset - 128
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score_1 = Timer(x=(self._board._left_offset - 96
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score_2 = Timer(x=(self._board._left_offset - 64
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score = [self._score_0, self._score_1, self._score_2]
+        self._score[0].set_number(self._bombs // 100)
+        self._score[1].set_number(self._bombs // 10)
+        self._score[2].set_number(self._bombs % 10)
 
     def run(self) -> None:
         pygame.init()
@@ -33,22 +56,27 @@ class Pysweeper:
         clock = pygame.time.Clock()
 
         while True:
-            screen.fill((255, 255, 255))
+            screen.fill((170, 170, 170))
 
             self._board.draw()
             self._smiley.draw(screen)
+            for timer in self._timer:
+                timer.draw(screen)
+            for score in self._score:
+                score.draw(screen)
 
             mouse_pos = pygame.mouse.get_pos()
             mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
             mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
-
-            text_font = pygame.font.Font("fonts/minecraft_regular.ttf", 16)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    self._smiley.set_in_awe()
+                if event.type == pygame.MOUSEBUTTONUP:
+                    self._smiley.set_reset()
                     if mouse_x < self._width and \
                        mouse_x >= 0 and \
                        mouse_y < self._height and \
@@ -65,6 +93,10 @@ class Pysweeper:
                             else:
                                 self._flags += 1
                                 block.flag()
+                            self._score[0].set_number((self._bombs - self._flags) // 100)
+                            self._score[1].set_number((self._bombs - self._flags) // 10)
+                            self._score[2].set_number((self._bombs - self._flags) % 10)
+
                         elif event.button == 2:
                             if block.is_question_mark():
                                 self._question_marks -= 1
@@ -72,57 +104,33 @@ class Pysweeper:
                             else:
                                 self._question_marks += 1
                                 block.question_mark()
+                    if mouse_pos[0] < self._smiley.get_position()[0] + 64 and \
+                       mouse_pos[0] >= self._smiley.get_position()[0] and \
+                       mouse_pos[1] < self._smiley.get_position()[1] + 64 and \
+                       mouse_pos[1] >= self._smiley.get_position()[1]:
+                        if event.button == 1:
+                            self.__init__(self._width,
+                                          self._height,
+                                          self._bombs)
+                            play_sound = True
 
-            fps_counter = text_font.render(f"FPS: {int(clock.get_fps())}",
-                                           True,
-                                           (0, 0, 0))
-            screen.blit(fps_counter, (8 + self._board._left_offset, 40))
+            self._board.check_win()
 
-            num_flags = text_font.render(f"Bombs: {self._bombs - self._flags}",
-                                         True,
-                                         (0, 0, 0))
-            screen.blit(num_flags, (40 + self._board._left_offset
-                                    + fps_counter.get_width(), 40))
-
-            num_clicks = text_font.render(f"Clicks: {self._clicks}",
-                                          True,
-                                          (0, 0, 0))
-            screen.blit(num_clicks, (72 + self._board._left_offset
-                                     + fps_counter.get_width()
-                                     + num_flags.get_width(), 40))
-
-            time = text_font.render(f"Time: {sec_to_time(self._time)}",
-                                    True,
-                                    (0, 0, 0))
-            screen.blit(time, (104 + self._board._left_offset
-                               + fps_counter.get_width()
-                               + num_flags.get_width()
-                               + num_clicks.get_width(), 40))
+            if self._board._game_over == "WIN":
+                self._smiley.set_cool()
 
             if self._board._game_over == "LOSE":
                 if play_sound:
                     pygame.mixer.music.load("sounds/explosion.mp3")
                     pygame.mixer.music.play()
                     play_sound = False
-                dim_light = pygame.Surface((32*self._width, 32*self._height))
-                dim_light.set_alpha(100)
-                dim_light.fill((0, 0, 0))
-                screen.blit(dim_light, (self._board._left_offset,
-                                        self._board._top_offset))
-                button = Button(x=((32*self._width - 128)/2
-                                   + self._board._left_offset),
-                                y=((32*self._height - 64)/2
-                                   + self._board._top_offset),
-                                width=128,
-                                height=64,
-                                text="Restart")
-                button.draw()
-                if button.is_clicked(mouse_pos):
-                    self.__init__(self._width, self._height, self._bombs)
-                    play_sound = True
+                self._smiley.set_dead()
 
             if self._board._game_over is None:
                 self._time += 1/60
+                self._timer[0].set_number(int(self._time) // 100)
+                self._timer[1].set_number(int(self._time) // 10)
+                self._timer[2].set_number(int(self._time) % 10)
 
             pygame.display.update()
             clock.tick(60)
