@@ -1,9 +1,16 @@
-import ctypes
 import os
 from typing import Tuple
 
-user32 = ctypes.windll.user32
-screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+from screeninfo import get_monitors
+
+
+def get_screen_size() -> Tuple[int, int]:
+    for m in get_monitors():
+        if m.is_primary:
+            return m.width, m.height
+
+
+screensize = get_screen_size()
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = '1'
 
