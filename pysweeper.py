@@ -152,7 +152,7 @@ class Pysweeper:
                     play_sound = False
                 self._smiley.set_dead()
 
-            if self._board._game_over is None:
+            if self._board._game_over is None and not self._first_move:
                 self._time += 1/60
                 self._timer[0].set_number(int(self._time) // 100)
                 self._timer[1].set_number((int(self._time) % 100) // 10)
