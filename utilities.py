@@ -139,6 +139,7 @@ class Block:
 class Board:
     def __init__(self, width: int, height: int, bomb_count: int) -> None:
         self._board = []
+        self._empty_tiles = []
         self._width = width
         self._height = height
         self._bomb_count = bomb_count
@@ -154,6 +155,9 @@ class Board:
                 self._board[i].append(Block())
                 self._board[i][j].set_position(x, y)
 
+        for y in range(self._height):
+            self._empty_tiles.extend((x, y) for x in range(self._width))
+
         self.generate_bombs()
         self.generate_numbers()
 
@@ -168,6 +172,7 @@ class Board:
             y = random.randint(0, self._height - 1)
             if not self._board[y][x].is_bomb():
                 self._board[y][x].set_bomb()
+                self._empty_tiles.remove((x, y))
                 bomb_count -= 1
 
     def generate_numbers(self) -> None:
@@ -187,6 +192,30 @@ class Board:
                 ):
                     count += 1
         return count
+
+    def move_bomb(self, x: int, y: int) -> None:
+        self._board[y][x]._is_bomb = False
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if (
+                    0 <= x + i < self._width
+                    and 0 <= y + j < self._height
+                    and self._board[y + j][x + i].is_bomb()
+                ):
+                    self._board[y + j][x + i]._number -= 1
+                    if self._board[y + j][x + i].is_bomb():
+                        self._board[y][x]._number += 1
+        i = random.randint(0, len(self._empty_tiles) - 1)
+        x = self._empty_tiles[i][0]
+        y = self._empty_tiles[i][1]
+        self._board[y][x].set_bomb()
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if (
+                    0 <= x + i < self._width
+                    and 0 <= y + j < self._height
+                ):
+                    self._board[y + j][x + i]._number += 1
 
     def draw(self) -> None:
         for y in range(self._height):
@@ -209,12 +238,14 @@ class Board:
                         and 0 <= y + j < self._height
                         and not self._board[y + j][x + i].is_revealed()
                     ):
+                        self._board[y + j][x + i].unflag()
                         self.reveal(x + i, y + j)
 
     def check_win(self) -> bool:
         for y in range(self._height):
             for x in range(self._width):
-                if not self._board[y][x].is_revealed() and not self._board[y][x].is_bomb():
+                if not self._board[y][x].is_revealed() \
+                   and not self._board[y][x].is_bomb():
                     return False
         if self._game_over is None:
             self._game_over = "WIN"

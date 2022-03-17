@@ -1,5 +1,6 @@
 from sys import exit
 
+from file_io import read_json, write_json
 from utilities import Board, Smiley, Timer, pygame, screen
 
 
@@ -37,8 +38,10 @@ class Pysweeper:
                               y=(self._board._top_offset - 64))
         self._score = [self._score_0, self._score_1, self._score_2]
         self._score[0].set_number(self._bombs // 100)
-        self._score[1].set_number(self._bombs // 10)
+        self._score[1].set_number((self._bombs % 100) // 10)
         self._score[2].set_number(self._bombs % 10)
+        self._first_move = True
+        self._new_highscore = True
 
     def run(self) -> None:
         pygame.init()
@@ -83,8 +86,13 @@ class Pysweeper:
                        mouse_y >= 0 and \
                        self._board._game_over is None:
                         block = self._board._board[mouse_y][mouse_x]
-                        if event.button == 1 and not block.is_revealed():
+                        if event.button == 1 and not block.is_revealed() \
+                           and not block.is_flagged():
                             self._clicks += 1
+                            if self._first_move:
+                                if block.is_bomb():
+                                    self._board.move_bomb(mouse_x, mouse_y)
+                                self._first_move = False
                             self._board.reveal(mouse_x, mouse_y)
                         elif event.button == 3 and not block.is_revealed():
                             if block.is_flagged():
@@ -93,17 +101,22 @@ class Pysweeper:
                             else:
                                 self._flags += 1
                                 block.flag()
-                            self._score[0].set_number((self._bombs - self._flags) // 100)
-                            self._score[1].set_number((self._bombs - self._flags) // 10)
-                            self._score[2].set_number((self._bombs - self._flags) % 10)
+                            self._score[0].set_number((self._bombs
+                                                       - self._flags) // 100)
+                            self._score[1].set_number(((self._bombs
+                                                       - self._flags) % 100)
+                                                      // 10)
+                            self._score[2].set_number((self._bombs
+                                                       - self._flags) % 10)
 
                         elif event.button == 2:
-                            if block.is_question_mark():
-                                self._question_marks -= 1
-                                block.unquestion_mark()
-                            else:
-                                self._question_marks += 1
-                                block.question_mark()
+                            if not block.is_flagged():
+                                if block.is_question_mark():
+                                    self._question_marks -= 1
+                                    block.unquestion_mark()
+                                else:
+                                    self._question_marks += 1
+                                    block.question_mark()
                     if mouse_pos[0] < self._smiley.get_position()[0] + 64 and \
                        mouse_pos[0] >= self._smiley.get_position()[0] and \
                        mouse_pos[1] < self._smiley.get_position()[1] + 64 and \
@@ -118,6 +131,19 @@ class Pysweeper:
 
             if self._board._game_over == "WIN":
                 self._smiley.set_cool()
+                if self._new_highscore:
+                    highscores = read_json("data/data.json")
+                    id = len(highscores)
+                    summary = {
+                        "width": self._width,
+                        "height": self._height,
+                        "bombs": self._bombs,
+                        "clicks": self._clicks,
+                        "time": round(self._time, 3)
+                    }
+                    highscores[id] = summary
+                    write_json("data/data.json", highscores)
+                    self._new_highscore = False
 
             if self._board._game_over == "LOSE":
                 if play_sound:
@@ -129,7 +155,7 @@ class Pysweeper:
             if self._board._game_over is None:
                 self._time += 1/60
                 self._timer[0].set_number(int(self._time) // 100)
-                self._timer[1].set_number(int(self._time) // 10)
+                self._timer[1].set_number((int(self._time) % 100) // 10)
                 self._timer[2].set_number(int(self._time) % 10)
 
             pygame.display.update()

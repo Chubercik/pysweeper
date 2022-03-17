@@ -1,10 +1,12 @@
+from file_io import read_json
 from pysweeper import Pysweeper
-
-# https://minesweeperonline.com/
 
 
 def main():
-    game = Pysweeper(20, 20, 40)
+    game_settings = read_json("data/config.json")
+    game = Pysweeper(game_settings["width"],
+                     game_settings["height"],
+                     game_settings["bombs"])
     game.run()
 
 
