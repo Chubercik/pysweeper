@@ -1,6 +1,7 @@
 from sys import exit
 
 from file_io import read_json, write_json
+from sprites import load_file
 from utilities import Board, Smiley, Timer, pygame, screen
 
 
@@ -50,7 +51,7 @@ class Pysweeper:
         play_sound = True
 
         pygame.display.set_caption("pysweeper")
-        pygame.display.set_icon(pygame.image.load("textures/bomb.png"))
+        pygame.display.set_icon(pygame.image.load(load_file("textures/bomb.png")))
         pygame.display.set_mode(size=(32*self._width + 200,
                                       32*self._height + 200),
                                 flags=pygame.RESIZABLE,
@@ -132,7 +133,7 @@ class Pysweeper:
             if self._board._game_over == "WIN":
                 self._smiley.set_cool()
                 if self._new_highscore:
-                    highscores = read_json("data/data.json")
+                    highscores = read_json(load_file("data/data.json"))
                     id = len(highscores)
                     summary = {
                         "width": self._width,
@@ -142,12 +143,12 @@ class Pysweeper:
                         "time": round(self._time, 3)
                     }
                     highscores[id] = summary
-                    write_json("data/data.json", highscores)
+                    write_json(load_file("data/data.json"), highscores)
                     self._new_highscore = False
 
             if self._board._game_over == "LOSE":
                 if play_sound:
-                    pygame.mixer.music.load("sounds/explosion.mp3")
+                    pygame.mixer.music.load(load_file("sounds/explosion.mp3"))
                     pygame.mixer.music.play()
                     play_sound = False
                 self._smiley.set_dead()
