@@ -5,5 +5,12 @@
         "bombs": 40,
         "clicks": 55,
         "time": 108.9
+    },
+    "1": {
+        "width": 20,
+        "height": 20,
+        "bombs": 40,
+        "clicks": 39,
+        "time": 72.5
     }
 }
