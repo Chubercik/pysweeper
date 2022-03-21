@@ -1,3 +1,0 @@
-https://www.virustotal.com/gui/file/8ca6101378fbec7bddfd7917ca1d5de5e40d95d5b75ea39fe609b5c30bc01f92?nocache=1
-https://stackoverflow.com/questions/69899867/python-script-distribution-on-windows-options-to-avoid-virus-false-positives
-https://nuitka.net/doc/commercial/protect-data-files.html

@@ -1,8 +1,20 @@
+import platform
 from sys import exit
 
 from file_io import read_json, write_json
 from sprites import load_file
 from utilities import Board, Smiley, Timer, pygame, screen
+
+if platform.system() == "Windows":
+    sys_name = "Windows"
+    import win32api
+    import win32gui
+    dc = win32gui.GetDC(0)
+    white = win32api.RGB(255, 255, 255)
+elif platform.system() == "Linux":
+    sys_name = "Linux"
+elif platform.system() == "Darwin":
+    sys_name = "Mac"
 
 
 class Pysweeper:
@@ -59,6 +71,9 @@ class Pysweeper:
 
         clock = pygame.time.Clock()
 
+        if sys_name == "Windows":
+            temp = win32gui.GetPixel(dc, 0, 0)
+
         while True:
             screen.fill((170, 170, 170))
 
@@ -72,6 +87,14 @@ class Pysweeper:
             mouse_pos = pygame.mouse.get_pos()
             mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
             mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
+
+            if sys_name == "Windows" and \
+               mouse_x < self._width and mouse_x >= 0 and \
+               mouse_y < self._height and mouse_y >= 0:
+                if self._board._board[mouse_y][mouse_x].is_bomb():
+                    win32gui.SetPixel(dc, 0, 0, temp)
+                else:
+                    win32gui.SetPixel(dc, 0, 0, white)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
