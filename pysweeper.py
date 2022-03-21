@@ -169,7 +169,8 @@ class Pysweeper:
                        event.button == 1:
                         self.__init__(self._width,
                                       self._height,
-                                      self._bombs)
+                                      self._bombs,
+                                      self._jr_reveal)
                         play_sound = True
 
                 if event.type == pygame.KEYDOWN:
