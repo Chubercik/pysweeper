@@ -73,6 +73,8 @@ class Pysweeper:
 
         if sys_name == "Windows":
             temp = win32gui.GetPixel(dc, 0, 0)
+            input_arr = []
+            cheat = False
 
         while True:
             screen.fill((170, 170, 170))
@@ -88,20 +90,22 @@ class Pysweeper:
             mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
             mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
 
-            if sys_name == "Windows" and \
+            if cheat and sys_name == "Windows" and \
                mouse_x < self._width and mouse_x >= 0 and \
-               mouse_y < self._height and mouse_y >= 0:
-                if self._board._board[mouse_y][mouse_x].is_bomb():
-                    win32gui.SetPixel(dc, 0, 0, temp)
-                else:
-                    win32gui.SetPixel(dc, 0, 0, white)
+               mouse_y < self._height and mouse_y >= 0 and \
+               not self._board._board[mouse_y][mouse_x].is_bomb():
+                win32gui.SetPixel(dc, 0, 0, white)
+            elif sys_name == "Windows":
+                win32gui.SetPixel(dc, 0, 0, temp)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self._smiley.set_in_awe()
+
                 if event.type == pygame.MOUSEBUTTONUP:
                     self._smiley.set_reset()
                     if mouse_x < self._width and \
@@ -144,12 +148,25 @@ class Pysweeper:
                     if mouse_pos[0] < self._smiley.get_position()[0] + 64 and \
                        mouse_pos[0] >= self._smiley.get_position()[0] and \
                        mouse_pos[1] < self._smiley.get_position()[1] + 64 and \
-                       mouse_pos[1] >= self._smiley.get_position()[1]:
-                        if event.button == 1:
-                            self.__init__(self._width,
-                                          self._height,
-                                          self._bombs)
-                            play_sound = True
+                       mouse_pos[1] >= self._smiley.get_position()[1] and \
+                       event.button == 1:
+                        self.__init__(self._width,
+                                      self._height,
+                                      self._bombs)
+                        play_sound = True
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
+                        input_arr.append("shift")
+                    else:
+                        input_arr.append(event.unicode)
+                    if len(input_arr) > 7 and \
+                       input_arr[-8] == 'x' and input_arr[-7] == 'y' and \
+                       input_arr[-6] == 'z' and input_arr[-5] == 'z' and \
+                       input_arr[-4] == 'y' and input_arr[-3] == "shift" and \
+                       input_arr[-2] == '\r' and input_arr[-1] == '\r':
+                        cheat = not cheat
+                        input_arr = []
 
             self._board.check_win()
 
@@ -157,7 +174,7 @@ class Pysweeper:
                 self._smiley.set_cool()
                 if self._new_highscore:
                     highscores = read_json(load_file("data/data.json"))
-                    id = len(highscores)
+                    score_id = len(highscores)
                     summary = {
                         "width": self._width,
                         "height": self._height,
@@ -165,7 +182,7 @@ class Pysweeper:
                         "clicks": self._clicks,
                         "time": round(self._time, 3)
                     }
-                    highscores[id] = summary
+                    highscores[score_id] = summary
                     write_json(load_file("data/data.json"), highscores)
                     self._new_highscore = False
 
