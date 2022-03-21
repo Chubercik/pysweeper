@@ -1,3 +1,4 @@
+import itertools
 import random
 from typing import Tuple
 
@@ -176,82 +177,69 @@ class Board:
                 bomb_count -= 1
 
     def generate_numbers(self) -> None:
-        for y in range(self._height):
-            for x in range(self._width):
-                if not self._board[y][x].is_bomb():
-                    self._board[y][x].set_number(self.count_bombs(x, y))
+        for y, x in itertools.product(range(self._height), range(self._width)):
+            if not self._board[y][x].is_bomb():
+                self._board[y][x].set_number(self.count_bombs(x, y))
 
     def count_bombs(self, x: int, y: int) -> int:
-        count = 0
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if (
+        return sum(bool((
                     0 <= x + i < self._width
                     and 0 <= y + j < self._height
                     and self._board[y + j][x + i].is_bomb()
-                ):
-                    count += 1
-        return count
+                )) for i, j in itertools.product(range(-1, 2), range(-1, 2)))
 
     def move_bomb(self, x: int, y: int) -> None:
         self._board[y][x]._is_bomb = False
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if (
-                    0 <= x + i < self._width
-                    and 0 <= y + j < self._height
-                    and self._board[y + j][x + i].is_bomb()
-                ):
-                    self._board[y + j][x + i]._number -= 1
-                    if self._board[y + j][x + i].is_bomb():
-                        self._board[y][x]._number += 1
+        for i, j in itertools.product(range(-1, 2), range(-1, 2)):
+            if (
+                0 <= x + i < self._width
+                and 0 <= y + j < self._height
+                and self._board[y + j][x + i].is_bomb()
+            ):
+                self._board[y + j][x + i]._number -= 1
+                if self._board[y + j][x + i].is_bomb():
+                    self._board[y][x]._number += 1
         i = random.randint(0, len(self._empty_tiles) - 1)
         x = self._empty_tiles[i][0]
         y = self._empty_tiles[i][1]
         self._board[y][x].set_bomb()
-        for i in range(-1, 2):
-            for j in range(-1, 2):
-                if (
-                    0 <= x + i < self._width
-                    and 0 <= y + j < self._height
-                ):
-                    self._board[y + j][x + i]._number += 1
+        for i, j in itertools.product(range(-1, 2), range(-1, 2)):
+            if (
+                0 <= x + i < self._width
+                and 0 <= y + j < self._height
+            ):
+                self._board[y + j][x + i]._number += 1
 
     def draw(self) -> None:
-        for y in range(self._height):
-            for x in range(self._width):
-                self._board[y][x].draw()
+        for y, x in itertools.product(range(self._height), range(self._width)):
+            self._board[y][x].draw()
 
     def reveal(self, x: int, y: int) -> None:
         if self._board[y][x].is_bomb():
             self._board[y][x].set_exploded()
-            for x in range(self._width):
-                for y in range(self._height):
-                    self._board[y][x].reveal()
+            for x, y in itertools.product(range(self._width), range(self._height)):
+                self._board[y][x].reveal()
             self._game_over = "LOSE"
         self._board[y][x].reveal()
         if self._board[y][x].get_number() == 0:
-            for i in range(-1, 2):
-                for j in range(-1, 2):
-                    if (
-                        0 <= x + i < self._width
-                        and 0 <= y + j < self._height
-                        and not self._board[y + j][x + i].is_revealed()
-                    ):
-                        self._board[y + j][x + i].unflag()
-                        self.reveal(x + i, y + j)
+            for i, j in itertools.product(range(-1, 2), range(-1, 2)):
+                if (
+                    0 <= x + i < self._width
+                    and 0 <= y + j < self._height
+                    and not self._board[y + j][x + i].is_revealed()
+                ):
+                    self._board[y + j][x + i].unflag()
+                    self.reveal(x + i, y + j)
 
     def check_win(self) -> bool:
-        for y in range(self._height):
-            for x in range(self._width):
-                if not self._board[y][x].is_revealed() \
-                   and not self._board[y][x].is_bomb():
-                    return False
+        for y, x in itertools.product(range(self._height), range(self._width)):
+            if not self._board[y][x].is_revealed() \
+               and not self._board[y][x].is_bomb():
+                return False
         if self._game_over is None:
             self._game_over = "WIN"
-            for x in range(self._width):
-                for y in range(self._height):
-                    self._board[y][x].reveal()
+            for x, y in itertools.product(range(self._width), range(self._height)):
+                self._board[y][x].reveal()
             return True
         return False
 
