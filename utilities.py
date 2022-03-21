@@ -227,8 +227,8 @@ class Board:
                     0 <= x + i < self._width
                     and 0 <= y + j < self._height
                     and not self._board[y + j][x + i].is_revealed()
+                    and not self._board[y + j][x + i].is_flagged()
                 ):
-                    self._board[y + j][x + i].unflag()
                     self.reveal(x + i, y + j)
 
     def check_win(self) -> bool:
