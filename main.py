@@ -7,7 +7,8 @@ def main():
     game_settings = read_json(load_file("data/config.json"))
     game = Pysweeper(game_settings["width"],
                      game_settings["height"],
-                     game_settings["bombs"])
+                     game_settings["bombs"],
+                     game_settings["jr_reveal"])
     game.run()
 
 

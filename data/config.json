@@ -1,5 +1,6 @@
 {
     "width": 20,
     "height": 20,
-    "bombs": 40
+    "bombs": 40,
+    "jr_reveal": true
 }

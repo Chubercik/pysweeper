@@ -1,3 +1,4 @@
+import itertools
 import platform
 from sys import exit
 
@@ -18,7 +19,11 @@ elif platform.system() == "Darwin":
 
 
 class Pysweeper:
-    def __init__(self, width: int, height: int, bombs: int) -> None:
+    def __init__(self,
+                 width: int,
+                 height: int,
+                 bombs: int,
+                 jr_reveal: bool = False) -> None:
         self._width = width
         self._height = height
         self._bombs = bombs
@@ -55,6 +60,7 @@ class Pysweeper:
         self._score[2].set_number(self._bombs % 10)
         self._first_move = True
         self._new_highscore = True
+        self._jr_reveal = jr_reveal
 
     def run(self) -> None:
         pygame.init()
@@ -122,6 +128,17 @@ class Pysweeper:
                                     self._board.move_bomb(mouse_x, mouse_y)
                                 self._first_move = False
                             self._board.reveal(mouse_x, mouse_y)
+                        elif event.button == 1 and block.is_revealed() \
+                                and self._jr_reveal:
+                            self._clicks += 1
+                            for i, j in itertools.product(range(-1, 2), range(-1, 2)):
+                                if (
+                                    0 <= mouse_x + i < self._width
+                                    and 0 <= mouse_y + j < self._height
+                                    and not self._board._board[mouse_y + j][mouse_x + i].is_revealed()
+                                    and not self._board._board[mouse_y + j][mouse_x + i].is_flagged()
+                                ):
+                                    self._board.reveal(mouse_x + i, mouse_y + j)
                         elif event.button == 3 and not block.is_revealed():
                             if block.is_flagged():
                                 self._flags -= 1
