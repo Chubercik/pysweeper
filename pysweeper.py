@@ -17,6 +17,8 @@ elif platform.system() == "Linux":
 elif platform.system() == "Darwin":
     sys_name = "Mac"
 
+import pygame_gui
+
 
 class Pysweeper:
     def __init__(self,
@@ -74,6 +76,9 @@ class Pysweeper:
                                       32*self._height + 200),
                                 flags=pygame.RESIZABLE,
                                 vsync=True)
+
+        manager = pygame_gui.UIManager((32*self._width + 200,
+                                        32*self._height + 200))
 
         clock = pygame.time.Clock()
 
@@ -176,6 +181,9 @@ class Pysweeper:
                 if event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
                         input_arr.append("shift")
+                    elif (event.key == pygame.K_BACKSPACE and
+                          len(input_arr) > 0):
+                        input_arr.pop()
                     else:
                         input_arr.append(event.unicode)
                     if len(input_arr) > 7 and \
@@ -185,6 +193,12 @@ class Pysweeper:
                        input_arr[-2] == '\r' and input_arr[-1] == '\r':
                         cheat = not cheat
                         input_arr = []
+
+                manager.process_events(event)
+
+            font = pygame.font.Font("fonts/minecraft_regular.ttf", 32)
+            text = font.render("".join(input_arr), True, (0, 0, 0))
+            screen.blit(text, (50, 750))
 
             self._board.check_win()
 
@@ -217,8 +231,12 @@ class Pysweeper:
                 self._timer[1].set_number((int(self._time) % 100) // 10)
                 self._timer[2].set_number(int(self._time) % 10)
 
+            time_delta = clock.tick(60)/1000.0
+
+            manager.update(time_delta)
+            manager.draw_ui(screen)
+
             pygame.display.update()
-            clock.tick(60)
 
 
 def main():
