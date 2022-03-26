@@ -17,8 +17,6 @@ elif platform.system() == "Linux":
 elif platform.system() == "Darwin":
     sys_name = "Mac"
 
-import pygame_gui  # type: ignore
-
 
 class Pysweeper:
     def __init__(self,
@@ -75,9 +73,6 @@ class Pysweeper:
                                       32*self._height + 200),
                                 flags=pygame.RESIZABLE,
                                 vsync=True)
-
-        manager = pygame_gui.UIManager((32*self._width + 200,
-                                        32*self._height + 200))
 
         clock = pygame.time.Clock()
 
@@ -189,9 +184,8 @@ class Pysweeper:
                         cheat = not cheat
                         input_arr = []
 
-                manager.process_events(event)
-
-            font = pygame.font.Font("fonts/minecraft_regular.ttf", 32)
+            font = pygame.font.Font(load_file("fonts/minecraft_regular.ttf"),
+                                    32)
             text = font.render("".join(input_arr), True, (0, 0, 0))
             screen.blit(text, (50, 750))
 
@@ -226,10 +220,7 @@ class Pysweeper:
                 self._timer[1].set_number((int(self._time) % 100) // 10)
                 self._timer[2].set_number(int(self._time) % 10)
 
-            time_delta = clock.tick(60)/1000.0
-
-            manager.update(time_delta)
-            manager.draw_ui(screen)
+            clock.tick(60)
 
             pygame.display.update()
 
