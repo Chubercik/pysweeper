@@ -8,8 +8,8 @@ from utilities import Board, Smiley, Timer, pygame, screen
 
 if platform.system() == "Windows":
     sys_name = "Windows"
-    import win32api
-    import win32gui
+    import win32api  # type: ignore
+    import win32gui  # type: ignore
     dc = win32gui.GetDC(0)
     white = win32api.RGB(255, 255, 255)
 elif platform.system() == "Linux":
@@ -17,7 +17,7 @@ elif platform.system() == "Linux":
 elif platform.system() == "Darwin":
     sys_name = "Mac"
 
-import pygame_gui
+import pygame_gui  # type: ignore
 
 
 class Pysweeper:
@@ -28,15 +28,15 @@ class Pysweeper:
                  jr_reveal: bool = False) -> None:
         self._width = width
         self._height = height
-        self._bombs = bombs
         self._clicks = 0
         self._flags = 0
         self._question_marks = 0
         self._board = Board(width, height, bombs)
+        self._bombs = self._board._bomb_count
         self._smiley = Smiley(x=(self._board._left_offset - 32
                                  + 32*self._width//2),
                               y=(self._board._top_offset - 64))
-        self._time = 0
+        self._time: float = 0
         self._timer_0 = Timer(x=(self._board._left_offset + 32
                                  + 32*self._width//2),
                               y=(self._board._top_offset - 64))
@@ -61,14 +61,13 @@ class Pysweeper:
         self._score[1].set_number((self._bombs % 100) // 10)
         self._score[2].set_number(self._bombs % 10)
         self._first_move = True
+        self._play_sound = True
         self._new_highscore = True
         self._jr_reveal = jr_reveal
 
     def run(self) -> None:
         pygame.init()
         pygame.mixer.init()
-
-        play_sound = True
 
         pygame.display.set_caption("pysweeper")
         pygame.display.set_icon(pygame.image.load(load_file("textures/bomb.png")))
@@ -172,11 +171,7 @@ class Pysweeper:
                        mouse_pos[1] < self._smiley.get_position()[1] + 64 and \
                        mouse_pos[1] >= self._smiley.get_position()[1] and \
                        event.button == 1:
-                        self.__init__(self._width,
-                                      self._height,
-                                      self._bombs,
-                                      self._jr_reveal)
-                        play_sound = True
+                        self.restart()
 
                 if event.type == pygame.KEYDOWN:
                     if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
@@ -219,10 +214,10 @@ class Pysweeper:
                     self._new_highscore = False
 
             if self._board._game_over == "LOSE":
-                if play_sound:
+                if self._play_sound:
                     pygame.mixer.music.load(load_file("sounds/explosion.mp3"))
                     pygame.mixer.music.play()
-                    play_sound = False
+                    self._play_sound = False
                 self._smiley.set_dead()
 
             if self._board._game_over is None and not self._first_move:
@@ -237,6 +232,42 @@ class Pysweeper:
             manager.draw_ui(screen)
 
             pygame.display.update()
+
+    def restart(self) -> None:
+        self._clicks = 0
+        self._flags = 0
+        self._question_marks = 0
+        self._board = Board(self._width, self._height, self._bombs)
+        self._smiley = Smiley(x=(self._board._left_offset - 32
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._time = 0
+        self._timer_0 = Timer(x=(self._board._left_offset + 32
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer_1 = Timer(x=(self._board._left_offset + 64
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer_2 = Timer(x=(self._board._left_offset + 96
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._timer = [self._timer_0, self._timer_1, self._timer_2]
+        self._score_0 = Timer(x=(self._board._left_offset - 128
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score_1 = Timer(x=(self._board._left_offset - 96
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score_2 = Timer(x=(self._board._left_offset - 64
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self._score = [self._score_0, self._score_1, self._score_2]
+        self._score[0].set_number(self._bombs // 100)
+        self._score[1].set_number((self._bombs % 100) // 10)
+        self._score[2].set_number(self._bombs % 10)
+        self._first_move = True
+        self._new_highscore = True
+        self._play_sound = True
 
 
 def main():

@@ -2,5 +2,6 @@
     "width": 20,
     "height": 20,
     "bombs": 40,
-    "jr_reveal": true
+    "jr_reveal": true,
+    "offset": 100
 }

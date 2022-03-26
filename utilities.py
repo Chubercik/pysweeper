@@ -1,8 +1,8 @@
 import itertools
 import random
-from typing import Tuple
+from typing import List, Optional, Tuple
 
-from sprites import Sprites, blit_sprite, pygame, screen
+from sprites import Sprites, blit_sprite, game_offset, pygame, screen
 
 sprites = Sprites().sprites
 
@@ -19,7 +19,7 @@ class Block:
         self._y = 0
 
     def draw(self) -> None:
-        wall = pygame.Surface((32, 32))
+        wall = pygame.surface.Surface((32, 32))
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
         wall = pygame.transform.scale(wall, (30, 30))
@@ -133,19 +133,19 @@ class Block:
     def get_number(self) -> int:
         return self._number
 
-    def get_position(self) -> Tuple[int]:
+    def get_position(self) -> Tuple[int, int]:
         return (self._x, self._y)
 
 
 class Board:
     def __init__(self, width: int, height: int, bomb_count: int) -> None:
-        self._board = []
-        self._empty_tiles = []
+        self._board: List[List[Block]] = []
+        self._empty_tiles: List[Tuple[int, int]] = []
         self._width = width
         self._height = height
         self._bomb_count = bomb_count
-        self._left_offset = 100
-        self._top_offset = 100
+        self._left_offset: int = game_offset
+        self._top_offset: int = game_offset
         for i, y in enumerate(range(self._left_offset,
                                     self._left_offset + self._height*32,
                                     32)):
@@ -162,12 +162,13 @@ class Board:
         self.generate_bombs()
         self.generate_numbers()
 
-        self._game_over = None
+        self._game_over: Optional[str] = None
 
     def generate_bombs(self) -> None:
         bomb_count = self._bomb_count
         if bomb_count > self._width * self._height:
-            bomb_count = self._width * self._height
+            self._bomb_count = self._width * self._height - 1
+            bomb_count = self._bomb_count
         while bomb_count > 0:
             x = random.randint(0, self._width - 1)
             y = random.randint(0, self._height - 1)
@@ -251,9 +252,9 @@ class Smiley:
         self._is_in_awe = False
         self._is_dead = False
         self._is_cool = False
-        self._sprite = None
+        self._sprite: Optional[pygame.surface.Surface] = None
 
-    def draw(self, screen: pygame.Surface) -> None:
+    def draw(self, screen: pygame.surface.Surface) -> None:
         screen.blit(pygame.transform.scale(sprites["tile"], (64, 64)),
                     self.get_position())
         if self._is_in_awe:
@@ -264,8 +265,9 @@ class Smiley:
             self._sprite = sprites["smiley_yeah"]
         else:
             self._sprite = sprites["smiley"]
-        self._sprite = pygame.transform.scale(self._sprite, (64, 64))
-        screen.blit(self._sprite, (self._x, self._y))
+        if self._sprite:
+            self._sprite = pygame.transform.scale(self._sprite, (64, 64))
+            screen.blit(self._sprite, (self._x, self._y))
 
     def set_reset(self) -> None:
         self._is_dead = False
@@ -300,7 +302,7 @@ class Smiley:
         self._x = x
         self._y = y
 
-    def get_position(self) -> Tuple[int]:
+    def get_position(self) -> Tuple[int, int]:
         return (self._x, self._y)
 
 
@@ -309,10 +311,10 @@ class Timer:
         self._x = x
         self._y = y
         self._number = 0
-        self._sprite = None
+        self._sprite: Optional[pygame.surface.Surface] = None
 
-    def draw(self, screen: pygame.Surface) -> None:
-        wall = pygame.Surface((32, 64))
+    def draw(self, screen: pygame.surface.Surface) -> None:
+        wall = pygame.surface.Surface((32, 64))
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
         wall = pygame.transform.scale(wall, (30, 62))
@@ -338,8 +340,9 @@ class Timer:
             self._sprite = sprites["clock_eight"]
         elif self._number == 9:
             self._sprite = sprites["clock_nine"]
-        self._sprite = pygame.transform.scale(self._sprite, (32, 64))
-        screen.blit(self._sprite, (self._x, self._y))
+        if self._sprite:
+            self._sprite = pygame.transform.scale(self._sprite, (32, 64))
+            screen.blit(self._sprite, (self._x, self._y))
 
     def set_number(self, number: int) -> None:
         self._number = number
@@ -351,7 +354,7 @@ class Timer:
         self._x = x
         self._y = y
 
-    def get_position(self) -> Tuple[int]:
+    def get_position(self) -> Tuple[int, int]:
         return (self._x, self._y)
 
 

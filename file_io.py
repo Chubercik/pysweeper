@@ -1,8 +1,7 @@
 import json
-from typing import TextIO
 
 
-def read_json(file_name: TextIO) -> dict:
+def read_json(file_name: str) -> dict:
     """
     Reads a json file and returns a dictionary.
     """
@@ -10,7 +9,7 @@ def read_json(file_name: TextIO) -> dict:
         return json.load(f)
 
 
-def write_json(file_name: TextIO, data: dict, indent: int = 4) -> None:
+def write_json(file_name: str, data: dict, indent: int = 4) -> None:
     """
     Writes to a json file.
     """
