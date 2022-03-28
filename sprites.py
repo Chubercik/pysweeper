@@ -62,101 +62,22 @@ def blit_sprite(sprite: pygame.surface.Surface,
     screen.blit(sprite, location)
 
 
-bomb_explode_sprite = pygame.image.load(load_file("textures/bomb_explode.png"))
-bomb_no_sprite = pygame.image.load(load_file("textures/bomb_no.png"))
-bomb_sprite = pygame.image.load(load_file("textures/bomb.png"))
+sprites_folder_path = load_file("textures/")
 
-clock_null_sprite = pygame.image.load(load_file("textures/clock_null.png"))
-clock_zero_sprite = pygame.image.load(load_file("textures/clock_zero.png"))
-clock_one_sprite = pygame.image.load(load_file("textures/clock_one.png"))
-clock_two_sprite = pygame.image.load(load_file("textures/clock_two.png"))
-clock_three_sprite = pygame.image.load(load_file("textures/clock_three.png"))
-clock_four_sprite = pygame.image.load(load_file("textures/clock_four.png"))
-clock_five_sprite = pygame.image.load(load_file("textures/clock_five.png"))
-clock_six_sprite = pygame.image.load(load_file("textures/clock_six.png"))
-clock_seven_sprite = pygame.image.load(load_file("textures/clock_seven.png"))
-clock_eight_sprite = pygame.image.load(load_file("textures/clock_eight.png"))
-clock_nine_sprite = pygame.image.load(load_file("textures/clock_nine.png"))
 
-one_sprite = pygame.image.load(load_file("textures/one.png"))
-two_sprite = pygame.image.load(load_file("textures/two.png"))
-three_sprite = pygame.image.load(load_file("textures/three.png"))
-four_sprite = pygame.image.load(load_file("textures/four.png"))
-five_sprite = pygame.image.load(load_file("textures/five.png"))
-six_sprite = pygame.image.load(load_file("textures/six.png"))
-seven_sprite = pygame.image.load(load_file("textures/seven.png"))
-eight_sprite = pygame.image.load(load_file("textures/eight.png"))
-
-flag_sprite = pygame.image.load(load_file("textures/flag.png"))
-
-question_mark_sprite = pygame.image.load(load_file("textures/question_mark.png"))
-
-smiley_rip_sprite = pygame.image.load(load_file("textures/smiley_rip.png"))
-smiley_wow_sprite = pygame.image.load(load_file("textures/smiley_wow.png"))
-smiley_yeah_sprite = pygame.image.load(load_file("textures/smiley_yeah.png"))
-smiley_sprite = pygame.image.load(load_file("textures/smiley.png"))
-
-tile = pygame.image.load(load_file("textures/tile.png"))
+def image_loader(path: str) -> str:
+    for i in os.listdir(path):
+        yield ((os.path.splitext(i)[0]),
+               pygame.image.load(path + i).convert_alpha())
 
 
 class Sprites:
     def __init__(self):
-        self.sprites = {
-            "bomb_explode": bomb_explode_sprite,
-            "bomb_no": bomb_no_sprite,
-            "bomb": bomb_sprite,
-            "clock_null": clock_null_sprite,
-            "clock_zero": clock_zero_sprite,
-            "clock_one": clock_one_sprite,
-            "clock_two": clock_two_sprite,
-            "clock_three": clock_three_sprite,
-            "clock_four": clock_four_sprite,
-            "clock_five": clock_five_sprite,
-            "clock_six": clock_six_sprite,
-            "clock_seven": clock_seven_sprite,
-            "clock_eight": clock_eight_sprite,
-            "clock_nine": clock_nine_sprite,
-            "one": one_sprite,
-            "two": two_sprite,
-            "three": three_sprite,
-            "four": four_sprite,
-            "five": five_sprite,
-            "six": six_sprite,
-            "seven": seven_sprite,
-            "eight": eight_sprite,
-            "flag": flag_sprite,
-            "question_mark": question_mark_sprite,
-            "smiley_rip": smiley_rip_sprite,
-            "smiley_wow": smiley_wow_sprite,
-            "smiley_yeah": smiley_yeah_sprite,
-            "smiley": smiley_sprite,
-            "tile": tile
-        }
-
-        for i, sprite in self.sprites.items():
-            sprite = sprite.convert_alpha()
+        self.sprites = dict(image_loader(sprites_folder_path))
 
 
 def main():
-    # Testing automatic loading of sprites
-    sprites_folder_path = "textures/"
-
-    def image_loader(path) -> str:
-        for i in os.listdir(path):
-            yield ((os.path.splitext(i)[0]),
-                   pygame.image.load(path + i).convert_alpha)
-
-    images = dict(image_loader(sprites_folder_path))
-
-    for image in images:
-        print(image, end='')
-
-    print()
-
-    sprites = Sprites().sprites
-
-    for sprite in sprites:
-        print(sprite, end='')
+    pass
 
 
 if __name__ == "__main__":
