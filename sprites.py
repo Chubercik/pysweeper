@@ -138,7 +138,25 @@ class Sprites:
 
 
 def main():
-    pass
+    # Testing automatic loading of sprites
+    sprites_folder_path = "textures/"
+
+    def image_loader(path) -> str:
+        for i in os.listdir(path):
+            yield ((os.path.splitext(i)[0]),
+                   pygame.image.load(path + i).convert_alpha)
+
+    images = dict(image_loader(sprites_folder_path))
+
+    for image in images:
+        print(image, end='')
+
+    print()
+
+    sprites = Sprites().sprites
+
+    for sprite in sprites:
+        print(sprite, end='')
 
 
 if __name__ == "__main__":
