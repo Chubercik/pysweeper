@@ -78,8 +78,9 @@ class Pysweeper:
 
         if sys_name == "Windows":
             temp = win32gui.GetPixel(dc, 0, 0)
-            input_arr = []
-            cheat = False
+
+        input_arr = []
+        cheat = False
 
         while True:
             screen.fill((170, 170, 170))
