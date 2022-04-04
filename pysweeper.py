@@ -4,7 +4,7 @@ from sys import exit
 
 from file_io import read_json, write_json
 from sprites import load_file
-from utilities import Board, Smiley, Timer, pygame, screen
+from utilities import Board, Smiley, Timer, pg, screen
 
 if platform.system() == "Windows":
     sys_name = "Windows"
@@ -64,17 +64,17 @@ class Pysweeper:
         self._jr_reveal = jr_reveal
 
     def run(self) -> None:
-        pygame.init()
-        pygame.mixer.init()
+        pg.init()
+        pg.mixer.init()
 
-        pygame.display.set_caption("pysweeper")
-        pygame.display.set_icon(pygame.image.load(load_file("textures/bomb.png")))
-        pygame.display.set_mode(size=(32*self._width + 200,
-                                      32*self._height + 200),
-                                flags=pygame.RESIZABLE,
-                                vsync=True)
+        pg.display.set_caption("pysweeper")
+        pg.display.set_icon(pg.image.load(load_file("textures/bomb.png")))
+        pg.display.set_mode(size=(32*self._width + 200,
+                                  32*self._height + 200),
+                            flags=pg.RESIZABLE,
+                            vsync=True)
 
-        clock = pygame.time.Clock()
+        clock = pg.time.Clock()
 
         if sys_name == "Windows":
             temp = win32gui.GetPixel(dc, 0, 0)
@@ -92,7 +92,7 @@ class Pysweeper:
             for score in self._score:
                 score.draw(screen)
 
-            mouse_pos = pygame.mouse.get_pos()
+            mouse_pos = pg.mouse.get_pos()
             mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
             mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
 
@@ -104,15 +104,15 @@ class Pysweeper:
             elif sys_name == "Windows":
                 win32gui.SetPixel(dc, 0, 0, temp)
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     self._smiley.set_in_awe()
 
-                if event.type == pygame.MOUSEBUTTONUP:
+                if event.type == pg.MOUSEBUTTONUP:
                     self._smiley.set_reset()
                     if mouse_x < self._width and \
                        mouse_x >= 0 and \
@@ -146,14 +146,7 @@ class Pysweeper:
                             else:
                                 self._flags += 1
                                 block.flag()
-                            self._score[0].set_number((self._bombs
-                                                       - self._flags) // 100)
-                            self._score[1].set_number(((self._bombs
-                                                       - self._flags) % 100)
-                                                      // 10)
-                            self._score[2].set_number((self._bombs
-                                                       - self._flags) % 10)
-
+                            self.update_score()
                         elif event.button == 2:
                             if not block.is_flagged():
                                 if block.is_question_mark():
@@ -169,10 +162,10 @@ class Pysweeper:
                        event.button == 1:
                         self.restart()
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
+                if event.type == pg.KEYDOWN:
+                    if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):
                         input_arr.append("shift")
-                    elif (event.key == pygame.K_BACKSPACE and
+                    elif (event.key == pg.K_BACKSPACE and
                           len(input_arr) > 0):
                         input_arr.pop()
                     else:
@@ -185,8 +178,10 @@ class Pysweeper:
                         cheat = not cheat
                         input_arr = []
 
-            font = pygame.font.Font(load_file("fonts/minecraft_regular.ttf"),
-                                    32)
+                if event.type == pg.VIDEORESIZE:
+                    self.resize()
+
+            font = pg.font.Font(load_file("fonts/minecraft_regular.ttf"), 32)
             text = font.render("".join(input_arr), True, (0, 0, 0))
             screen.blit(text, (50, 750))
 
@@ -210,8 +205,8 @@ class Pysweeper:
 
             if self._board._game_over == "LOSE":
                 if self._play_sound:
-                    pygame.mixer.music.load(load_file("sounds/explosion.mp3"))
-                    pygame.mixer.music.play()
+                    pg.mixer.music.load(load_file("sounds/explosion.mp3"))
+                    pg.mixer.music.play()
                     self._play_sound = False
                 self._smiley.set_dead()
 
@@ -223,43 +218,73 @@ class Pysweeper:
 
             clock.tick(60)
 
-            pygame.display.update()
+            pg.display.update()
 
     def restart(self) -> None:
         self._clicks = 0
         self._flags = 0
         self._question_marks = 0
+        temp_left_offset = self._board._left_offset
+        temp_top_offset = self._board._top_offset
         self._board = Board(self._width, self._height, self._bombs)
+        self._board._left_offset = temp_left_offset
+        self._board._top_offset = temp_top_offset
+        self._board.window_resize()
         self._smiley = Smiley(x=(self._board._left_offset - 32
                                  + 32*self._width//2),
                               y=(self._board._top_offset - 64))
         self._time = 0
-        self._timer_0 = Timer(x=(self._board._left_offset + 32
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer_1 = Timer(x=(self._board._left_offset + 64
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer_2 = Timer(x=(self._board._left_offset + 96
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer = [self._timer_0, self._timer_1, self._timer_2]
-        self._score_0 = Timer(x=(self._board._left_offset - 128
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score_1 = Timer(x=(self._board._left_offset - 96
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score_2 = Timer(x=(self._board._left_offset - 64
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score = [self._score_0, self._score_1, self._score_2]
+        self.set_digit_displays()
         self._score[0].set_number(self._bombs // 100)
         self._score[1].set_number((self._bombs % 100) // 10)
         self._score[2].set_number(self._bombs % 10)
         self._first_move = True
         self._new_highscore = True
         self._play_sound = True
+
+    def resize(self) -> None:
+        self._board._left_offset = (pg.display.get_surface().get_width() -
+                                    32*self._width)//2
+        self._board._top_offset = (pg.display.get_surface().get_height() -
+                                   32*self._height)//2
+        self._smiley = Smiley(x=(self._board._left_offset - 32
+                                 + 32*self._width//2),
+                              y=(self._board._top_offset - 64))
+        self.set_digit_displays()
+        self.update_score()
+        self._board.window_resize()
+
+    def set_digit_displays(self):
+        self._timer_0 = Timer(x=(self._board._left_offset
+                                 + 32 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+
+        self._timer_1 = Timer(x=(self._board._left_offset
+                                 + 64 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+
+        self._timer_2 = Timer(x=(self._board._left_offset
+                                 + 96 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+        self._timer = [self._timer_0, self._timer_1, self._timer_2]
+
+        self._score_0 = Timer(x=(self._board._left_offset
+                                 - 128 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+
+        self._score_1 = Timer(x=(self._board._left_offset
+                                 - 96 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+
+        self._score_2 = Timer(x=(self._board._left_offset
+                                 - 64 + 32 * self._width // 2),
+                              y=self._board._top_offset - 64)
+        self._score = [self._score_0, self._score_1, self._score_2]
+
+    def update_score(self):
+        self._score[0].set_number((((self._bombs - self._flags)) // 100))
+        self._score[1].set_number(((((self._bombs - self._flags)) % 100) // 10))
+        self._score[2].set_number((((self._bombs - self._flags)) % 10))
 
 
 def main():

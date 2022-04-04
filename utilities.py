@@ -1,8 +1,10 @@
 import itertools
 import random
+import tkinter
+import tkinter.filedialog
 from typing import List, Optional, Tuple
 
-from sprites import Sprites, blit_sprite, game_offset, pygame, screen
+from sprites import Sprites, blit_sprite, game_offset, pg, screen
 
 sprites = Sprites().sprites
 
@@ -19,10 +21,10 @@ class Block:
         self._y = 0
 
     def draw(self) -> None:
-        wall = pygame.surface.Surface((32, 32))
+        wall = pg.surface.Surface((32, 32))
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
-        wall = pygame.transform.scale(wall, (30, 30))
+        wall = pg.transform.scale(wall, (30, 30))
         wall.fill((170, 170, 170))
         screen.blit(wall, (self._x + 1, self._y + 1))
         if self.is_revealed():
@@ -146,12 +148,12 @@ class Board:
         self._bomb_count = bomb_count
         self._left_offset: int = game_offset
         self._top_offset: int = game_offset
-        for i, y in enumerate(range(self._left_offset,
-                                    self._left_offset + self._height*32,
+        for i, y in enumerate(range(self._top_offset,
+                                    self._top_offset + self._height*32,
                                     32)):
             self._board.append([])
-            for j, x in enumerate(range(self._top_offset,
-                                        self._top_offset + self._width*32,
+            for j, x in enumerate(range(self._left_offset,
+                                        self._left_offset + self._width*32,
                                         32)):
                 self._board[i].append(Block())
                 self._board[i][j].set_position(x, y)
@@ -218,7 +220,8 @@ class Board:
     def reveal(self, x: int, y: int) -> None:
         if self._board[y][x].is_bomb():
             self._board[y][x].set_exploded()
-            for x, y in itertools.product(range(self._width), range(self._height)):
+            for x, y in itertools.product(range(self._width),
+                                          range(self._height)):
                 self._board[y][x].reveal()
             self._game_over = "LOSE"
         self._board[y][x].reveal()
@@ -239,10 +242,20 @@ class Board:
                 return False
         if self._game_over is None:
             self._game_over = "WIN"
-            for x, y in itertools.product(range(self._width), range(self._height)):
+            for x, y in itertools.product(range(self._width),
+                                          range(self._height)):
                 self._board[y][x].reveal()
             return True
         return False
+
+    def window_resize(self) -> None:
+        for (i, y), (j, x) in itertools.product(enumerate(range(self._top_offset,
+                                                                self._top_offset + self._height*32,
+                                                                32)),
+                                                enumerate(range(self._left_offset,
+                                                                self._left_offset + self._width*32,
+                                                                32))):
+            self._board[i][j].set_position(x, y)
 
 
 class Smiley:
@@ -252,10 +265,10 @@ class Smiley:
         self._is_in_awe = False
         self._is_dead = False
         self._is_cool = False
-        self._sprite: Optional[pygame.surface.Surface] = None
+        self._sprite: Optional[pg.surface.Surface] = None
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
-        screen.blit(pygame.transform.scale(sprites["tile"], (64, 64)),
+    def draw(self, screen: pg.surface.Surface) -> None:
+        screen.blit(pg.transform.scale(sprites["tile"], (64, 64)),
                     self.get_position())
         if self._is_in_awe:
             self._sprite = sprites["smiley_wow"]
@@ -266,7 +279,7 @@ class Smiley:
         else:
             self._sprite = sprites["smiley"]
         if self._sprite:
-            self._sprite = pygame.transform.scale(self._sprite, (64, 64))
+            self._sprite = pg.transform.scale(self._sprite, (64, 64))
             screen.blit(self._sprite, (self._x, self._y))
 
     def set_reset(self) -> None:
@@ -311,13 +324,13 @@ class Timer:
         self._x = x
         self._y = y
         self._number = 0
-        self._sprite: Optional[pygame.surface.Surface] = None
+        self._sprite: Optional[pg.surface.Surface] = None
 
-    def draw(self, screen: pygame.surface.Surface) -> None:
-        wall = pygame.surface.Surface((32, 64))
+    def draw(self, screen: pg.surface.Surface) -> None:
+        wall = pg.surface.Surface((32, 64))
         wall.fill((30, 30, 30))
         screen.blit(wall, (self._x, self._y))
-        wall = pygame.transform.scale(wall, (30, 62))
+        wall = pg.transform.scale(wall, (30, 62))
         wall.fill((170, 170, 170))
         screen.blit(wall, (self._x + 1, self._y + 1))
         if self._number == 0:
@@ -341,7 +354,7 @@ class Timer:
         elif self._number == 9:
             self._sprite = sprites["clock_nine"]
         if self._sprite:
-            self._sprite = pygame.transform.scale(self._sprite, (32, 64))
+            self._sprite = pg.transform.scale(self._sprite, (32, 64))
             screen.blit(self._sprite, (self._x, self._y))
 
     def set_number(self, number: int) -> None:
@@ -356,6 +369,14 @@ class Timer:
 
     def get_position(self) -> Tuple[int, int]:
         return (self._x, self._y)
+
+
+def prompt_file() -> str:
+    top = tkinter.Tk()
+    top.withdraw()  # hide window
+    file_name = tkinter.filedialog.askopenfilename(parent=top)
+    top.destroy()
+    return file_name
 
 
 def main():

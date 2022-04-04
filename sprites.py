@@ -33,18 +33,18 @@ position = (screensize[0] // 2 - game_width // 2 - game_offset,
 
 os.environ["SDL_VIDEO_WINDOW_POS"] = f"{str(position[0])}, {str(position[1])}"
 
-import pygame  # noqa: E402
+import pygame as pg  # noqa: E402
 
-screen = pygame.display.set_mode(flags=pygame.HIDDEN)
+screen = pg.display.set_mode(flags=pg.HIDDEN)
 
 
-def img_outline(img: pygame.surface.Surface,
+def img_outline(img: pg.surface.Surface,
                 color: Tuple[int, int, int],
                 loc: Tuple[int, int],
-                screen: pygame.surface.Surface) -> None:
-    mask = pygame.mask.from_surface(img)
+                screen: pg.surface.Surface) -> None:
+    mask = pg.mask.from_surface(img)
     mask_outline = mask.outline()
-    mask_surf = pygame.Surface(img.get_size())
+    mask_surf = pg.Surface(img.get_size())
     for pixel in mask_outline:
         mask_surf.set_at(pixel, color)
     mask_surf.set_colorkey((0, 0, 0))
@@ -54,10 +54,10 @@ def img_outline(img: pygame.surface.Surface,
     screen.blit(mask_surf, (loc[0], loc[1] + 1))
 
 
-def blit_sprite(sprite: pygame.surface.Surface,
+def blit_sprite(sprite: pg.surface.Surface,
                 outline_color: Tuple[int, int, int],
                 location: Tuple[int, int],
-                screen: pygame.surface.Surface) -> None:
+                screen: pg.surface.Surface) -> None:
     img_outline(sprite, outline_color, location, screen)
     screen.blit(sprite, location)
 
@@ -68,7 +68,7 @@ sprites_folder_path = load_file("textures/")
 def image_loader(path: str) -> str:
     for i in os.listdir(path):
         yield ((os.path.splitext(i)[0]),
-               pygame.image.load(path + i).convert_alpha())
+               pg.image.load(path + i).convert_alpha())
 
 
 class Sprites:
