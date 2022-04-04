@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Generator, Tuple
 
 from screeninfo import get_monitors  # type: ignore
 
@@ -65,7 +65,9 @@ def blit_sprite(sprite: pg.surface.Surface,
 sprites_folder_path = load_file("textures/")
 
 
-def image_loader(path: str) -> str:
+def image_loader(path: str) -> Generator[Tuple[str, pg.surface.Surface],
+                                         None,
+                                         None]:
     for i in os.listdir(path):
         yield ((os.path.splitext(i)[0]),
                pg.image.load(path + i).convert_alpha())

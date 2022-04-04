@@ -24,44 +24,44 @@ class Pysweeper:
                  height: int,
                  bombs: int,
                  jr_reveal: bool = False) -> None:
-        self._width = width
-        self._height = height
-        self._clicks = 0
-        self._flags = 0
-        self._question_marks = 0
-        self._board = Board(width, height, bombs)
-        self._bombs = self._board._bomb_count
-        self._smiley = Smiley(x=(self._board._left_offset - 32
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._time: float = 0
-        self._timer_0 = Timer(x=(self._board._left_offset + 32
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer_1 = Timer(x=(self._board._left_offset + 64
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer_2 = Timer(x=(self._board._left_offset + 96
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._timer = [self._timer_0, self._timer_1, self._timer_2]
-        self._score_0 = Timer(x=(self._board._left_offset - 128
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score_1 = Timer(x=(self._board._left_offset - 96
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score_2 = Timer(x=(self._board._left_offset - 64
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._score = [self._score_0, self._score_1, self._score_2]
-        self._score[0].set_number(self._bombs // 100)
-        self._score[1].set_number((self._bombs % 100) // 10)
-        self._score[2].set_number(self._bombs % 10)
-        self._first_move = True
-        self._play_sound = True
-        self._new_highscore = True
-        self._jr_reveal = jr_reveal
+        self.width = width
+        self.height = height
+        self.clicks = 0
+        self.flags = 0
+        self.question_marks = 0
+        self.board = Board(width, height, bombs)
+        self.bombs = self.board.bomb_count
+        self.smiley = Smiley(x=(self.board.left_offset - 32
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.time: float = 0
+        self.timer_0 = Timer(x=(self.board.left_offset + 32
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.timer_1 = Timer(x=(self.board.left_offset + 64
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.timer_2 = Timer(x=(self.board.left_offset + 96
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.timer = [self.timer_0, self.timer_1, self.timer_2]
+        self.score_0 = Timer(x=(self.board.left_offset - 128
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.score_1 = Timer(x=(self.board.left_offset - 96
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.score_2 = Timer(x=(self.board.left_offset - 64
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.score = [self.score_0, self.score_1, self.score_2]
+        self.score[0].number = (self.bombs // 100)
+        self.score[1].number = ((self.bombs % 100) // 10)
+        self.score[2].number = (self.bombs % 10)
+        self.first_move = True
+        self.play_sound = True
+        self.new_highscore = True
+        self.jr_reveal = jr_reveal
 
     def run(self) -> None:
         pg.init()
@@ -69,8 +69,8 @@ class Pysweeper:
 
         pg.display.set_caption("pysweeper")
         pg.display.set_icon(pg.image.load(load_file("textures/bomb.png")))
-        pg.display.set_mode(size=(32*self._width + 200,
-                                  32*self._height + 200),
+        pg.display.set_mode(size=(32*self.width + 200,
+                                  32*self.height + 200),
                             flags=pg.RESIZABLE,
                             vsync=True)
 
@@ -85,21 +85,21 @@ class Pysweeper:
         while True:
             screen.fill((170, 170, 170))
 
-            self._board.draw()
-            self._smiley.draw(screen)
-            for timer in self._timer:
+            self.board.draw()
+            self.smiley.draw(screen)
+            for timer in self.timer:
                 timer.draw(screen)
-            for score in self._score:
+            for score in self.score:
                 score.draw(screen)
 
             mouse_pos = pg.mouse.get_pos()
-            mouse_x = (mouse_pos[0] - self._board._left_offset) // 32
-            mouse_y = (mouse_pos[1] - self._board._top_offset) // 32
+            mouse_x = (mouse_pos[0] - self.board.left_offset) // 32
+            mouse_y = (mouse_pos[1] - self.board.top_offset) // 32
 
             if cheat and sys_name == "Windows" and \
-               mouse_x < self._width and mouse_x >= 0 and \
-               mouse_y < self._height and mouse_y >= 0 and \
-               not self._board._board[mouse_y][mouse_x].is_bomb():
+               mouse_x < self.width and mouse_x >= 0 and \
+               mouse_y < self.height and mouse_y >= 0 and \
+               not self.board.board[mouse_y][mouse_x].is_bomb:
                 win32gui.SetPixel(dc, 0, 0, white)
             elif sys_name == "Windows":
                 win32gui.SetPixel(dc, 0, 0, temp)
@@ -110,55 +110,55 @@ class Pysweeper:
                     exit()
 
                 if event.type == pg.MOUSEBUTTONDOWN:
-                    self._smiley.set_in_awe()
+                    self.smiley.set_in_awe()
 
                 if event.type == pg.MOUSEBUTTONUP:
-                    self._smiley.set_reset()
-                    if mouse_x < self._width and \
+                    self.smiley.set_reset()
+                    if mouse_x < self.width and \
                        mouse_x >= 0 and \
-                       mouse_y < self._height and \
+                       mouse_y < self.height and \
                        mouse_y >= 0 and \
-                       self._board._game_over is None:
-                        block = self._board._board[mouse_y][mouse_x]
-                        if event.button == 1 and not block.is_revealed() \
-                           and not block.is_flagged():
-                            self._clicks += 1
-                            if self._first_move:
-                                if block.is_bomb():
-                                    self._board.move_bomb(mouse_x, mouse_y)
-                                self._first_move = False
-                            self._board.reveal(mouse_x, mouse_y)
-                        elif event.button == 1 and block.is_revealed() \
-                                and self._jr_reveal:
-                            self._clicks += 1
+                       self.board.game_over is None:
+                        block = self.board.board[mouse_y][mouse_x]
+                        if event.button == 1 and not block.is_revealed \
+                           and not block.is_flagged:
+                            self.clicks += 1
+                            if self.first_move:
+                                if block.is_bomb:
+                                    self.board.move_bomb(mouse_x, mouse_y)
+                                self.first_move = False
+                            self.board.reveal(mouse_x, mouse_y)
+                        elif event.button == 1 and block.is_revealed \
+                                and self.jr_reveal:
+                            self.clicks += 1
                             for i, j in itertools.product(range(-1, 2), range(-1, 2)):
                                 if (
-                                    0 <= mouse_x + i < self._width
-                                    and 0 <= mouse_y + j < self._height
-                                    and not self._board._board[mouse_y + j][mouse_x + i].is_revealed()
-                                    and not self._board._board[mouse_y + j][mouse_x + i].is_flagged()
+                                    0 <= mouse_x + i < self.width
+                                    and 0 <= mouse_y + j < self.height
+                                    and not self.board.board[mouse_y + j][mouse_x + i].is_revealed
+                                    and not self.board.board[mouse_y + j][mouse_x + i].is_flagged
                                 ):
-                                    self._board.reveal(mouse_x + i, mouse_y + j)
-                        elif event.button == 3 and not block.is_revealed():
-                            if block.is_flagged():
-                                self._flags -= 1
-                                block.unflag()
+                                    self.board.reveal(mouse_x + i, mouse_y + j)
+                        elif event.button == 3 and not block.is_revealed:
+                            if block.is_flagged:
+                                self.flags -= 1
+                                block.is_flagged = False
                             else:
-                                self._flags += 1
-                                block.flag()
+                                self.flags += 1
+                                block.is_flagged = True
                             self.update_score()
                         elif event.button == 2:
-                            if not block.is_flagged():
-                                if block.is_question_mark():
-                                    self._question_marks -= 1
-                                    block.unquestion_mark()
+                            if not block.is_flagged:
+                                if block.is_question_mark:
+                                    self.question_marks -= 1
+                                    block.is_question_mark = False
                                 else:
-                                    self._question_marks += 1
-                                    block.question_mark()
-                    if mouse_pos[0] < self._smiley.get_position()[0] + 64 and \
-                       mouse_pos[0] >= self._smiley.get_position()[0] and \
-                       mouse_pos[1] < self._smiley.get_position()[1] + 64 and \
-                       mouse_pos[1] >= self._smiley.get_position()[1] and \
+                                    self.question_marks += 1
+                                    block.is_question_mark = True
+                    if mouse_pos[0] < self.smiley.get_position()[0] + 64 and \
+                       mouse_pos[0] >= self.smiley.get_position()[0] and \
+                       mouse_pos[1] < self.smiley.get_position()[1] + 64 and \
+                       mouse_pos[1] >= self.smiley.get_position()[1] and \
                        event.button == 1:
                         self.restart()
 
@@ -185,106 +185,106 @@ class Pysweeper:
             text = font.render("".join(input_arr), True, (0, 0, 0))
             screen.blit(text, (50, 750))
 
-            self._board.check_win()
+            self.board.check_win()
 
-            if self._board._game_over == "WIN":
-                self._smiley.set_cool()
-                if self._new_highscore:
+            if self.board.game_over == "WIN":
+                self.smiley.set_cool()
+                if self.new_highscore:
                     highscores = read_json(load_file("data/data.json"))
                     score_id = len(highscores)
                     summary = {
-                        "width": self._width,
-                        "height": self._height,
-                        "bombs": self._bombs,
-                        "clicks": self._clicks,
-                        "time": round(self._time, 3)
+                        "width": self.width,
+                        "height": self.height,
+                        "bombs": self.bombs,
+                        "clicks": self.clicks,
+                        "time": round(self.time, 3)
                     }
                     highscores[score_id] = summary
                     write_json(load_file("data/data.json"), highscores)
-                    self._new_highscore = False
+                    self.new_highscore = False
 
-            if self._board._game_over == "LOSE":
-                if self._play_sound:
+            if self.board.game_over == "LOSE":
+                if self.play_sound:
                     pg.mixer.music.load(load_file("sounds/explosion.mp3"))
                     pg.mixer.music.play()
-                    self._play_sound = False
-                self._smiley.set_dead()
+                    self.play_sound = False
+                self.smiley.set_dead()
 
-            if self._board._game_over is None and not self._first_move:
-                self._time += 1/60
-                self._timer[0].set_number(int(self._time) // 100)
-                self._timer[1].set_number((int(self._time) % 100) // 10)
-                self._timer[2].set_number(int(self._time) % 10)
+            if self.board.game_over is None and not self.first_move:
+                self.time += 1/60
+                self.timer[0].number = (int(self.time) // 100)
+                self.timer[1].number = ((int(self.time) % 100) // 10)
+                self.timer[2].number = (int(self.time) % 10)
 
             clock.tick(60)
 
             pg.display.update()
 
     def restart(self) -> None:
-        self._clicks = 0
-        self._flags = 0
-        self._question_marks = 0
-        temp_left_offset = self._board._left_offset
-        temp_top_offset = self._board._top_offset
-        self._board = Board(self._width, self._height, self._bombs)
-        self._board._left_offset = temp_left_offset
-        self._board._top_offset = temp_top_offset
-        self._board.window_resize()
-        self._smiley = Smiley(x=(self._board._left_offset - 32
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
-        self._time = 0
+        self.clicks = 0
+        self.flags = 0
+        self.question_marks = 0
+        temp_left_offset = self.board.left_offset
+        temp_top_offset = self.board.top_offset
+        self.board = Board(self.width, self.height, self.bombs)
+        self.board.left_offset = temp_left_offset
+        self.board.top_offset = temp_top_offset
+        self.board.window_resize()
+        self.smiley = Smiley(x=(self.board.left_offset - 32
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
+        self.time = 0
         self.set_digit_displays()
-        self._score[0].set_number(self._bombs // 100)
-        self._score[1].set_number((self._bombs % 100) // 10)
-        self._score[2].set_number(self._bombs % 10)
-        self._first_move = True
-        self._new_highscore = True
-        self._play_sound = True
+        self.score[0].number = (self.bombs // 100)
+        self.score[1].number = ((self.bombs % 100) // 10)
+        self.score[2].number = (self.bombs % 10)
+        self.first_move = True
+        self.new_highscore = True
+        self.play_sound = True
 
     def resize(self) -> None:
-        self._board._left_offset = (pg.display.get_surface().get_width() -
-                                    32*self._width)//2
-        self._board._top_offset = (pg.display.get_surface().get_height() -
-                                   32*self._height)//2
-        self._smiley = Smiley(x=(self._board._left_offset - 32
-                                 + 32*self._width//2),
-                              y=(self._board._top_offset - 64))
+        self.board.left_offset = (pg.display.get_surface().get_width() -
+                                  32*self.width)//2
+        self.board.top_offset = (pg.display.get_surface().get_height() -
+                                 32*self.height)//2
+        self.smiley = Smiley(x=(self.board.left_offset - 32
+                                + 32*self.width//2),
+                             y=(self.board.top_offset - 64))
         self.set_digit_displays()
         self.update_score()
-        self._board.window_resize()
+        self.board.window_resize()
 
     def set_digit_displays(self):
-        self._timer_0 = Timer(x=(self._board._left_offset
-                                 + 32 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
+        self.timer_0 = Timer(x=(self.board.left_offset
+                                + 32 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
 
-        self._timer_1 = Timer(x=(self._board._left_offset
-                                 + 64 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
+        self.timer_1 = Timer(x=(self.board.left_offset
+                                + 64 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
 
-        self._timer_2 = Timer(x=(self._board._left_offset
-                                 + 96 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
-        self._timer = [self._timer_0, self._timer_1, self._timer_2]
+        self.timer_2 = Timer(x=(self.board.left_offset
+                                + 96 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
+        self.timer = [self.timer_0, self.timer_1, self.timer_2]
 
-        self._score_0 = Timer(x=(self._board._left_offset
-                                 - 128 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
+        self.score_0 = Timer(x=(self.board.left_offset
+                                - 128 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
 
-        self._score_1 = Timer(x=(self._board._left_offset
-                                 - 96 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
+        self.score_1 = Timer(x=(self.board.left_offset
+                                - 96 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
 
-        self._score_2 = Timer(x=(self._board._left_offset
-                                 - 64 + 32 * self._width // 2),
-                              y=self._board._top_offset - 64)
-        self._score = [self._score_0, self._score_1, self._score_2]
+        self.score_2 = Timer(x=(self.board.left_offset
+                                - 64 + 32 * self.width // 2),
+                             y=self.board.top_offset - 64)
+        self.score = [self.score_0, self.score_1, self.score_2]
 
     def update_score(self):
-        self._score[0].set_number((((self._bombs - self._flags)) // 100))
-        self._score[1].set_number(((((self._bombs - self._flags)) % 100) // 10))
-        self._score[2].set_number((((self._bombs - self._flags)) % 10))
+        self.score[0].number = ((((self.bombs - self.flags)) // 100))
+        self.score[1].number = (((((self.bombs - self.flags)) % 100) // 10))
+        self.score[2].number = ((((self.bombs - self.flags)) % 10))
 
 
 def main():
