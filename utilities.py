@@ -4,6 +4,8 @@ import tkinter
 import tkinter.filedialog
 from typing import List, Optional, Tuple
 
+from PIL import Image
+
 from sprites import Sprites, blit_sprite, game_offset, pg, screen
 
 sprites = Sprites().sprites
@@ -321,6 +323,14 @@ def prompt_file() -> str:
     file_name = tkinter.filedialog.askopenfilename(parent=top)
     top.destroy()
     return file_name
+
+
+def png_to_ico(inp: str = "textures/icon.png", out: str = "icon.ico") -> None:
+    img = Image.open(inp)
+    icon_sizes = [(16, 16), (24, 24), (32, 32),
+                  (48, 48), (64, 64), (128, 128),
+                  (255, 255)]
+    img.save(out, sizes=icon_sizes)
 
 
 def main():
