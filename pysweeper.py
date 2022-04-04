@@ -68,7 +68,7 @@ class Pysweeper:
         pg.mixer.init()
 
         pg.display.set_caption("pysweeper")
-        pg.display.set_icon(pg.image.load(load_file("textures/bomb.png")))
+        pg.display.set_icon(pg.image.load(load_file("textures/icon.png")))
         pg.display.set_mode(size=(32*self.width + 200,
                                   32*self.height + 200),
                             flags=pg.RESIZABLE,
