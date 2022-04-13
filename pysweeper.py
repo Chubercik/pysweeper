@@ -69,8 +69,8 @@ class Pysweeper:
 
         pg.display.set_caption("pysweeper")
         pg.display.set_icon(pg.image.load(load_file("textures/icon.png")))
-        pg.display.set_mode(size=(32*self.width + 200,
-                                  32*self.height + 200),
+        pg.display.set_mode(size=(32*self.width + 2*self.board.left_offset,
+                                  32*self.height + 2*self.board.top_offset),
                             flags=pg.RESIZABLE,
                             vsync=True)
 
