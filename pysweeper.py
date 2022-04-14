@@ -122,6 +122,8 @@ class Pysweeper:
                         block = self.board.board[mouse_y][mouse_x]
                         if event.button == 1 and not block.is_revealed \
                            and not block.is_flagged:
+                            pg.mixer.music.load(load_file("sounds/plop.mp3"))
+                            pg.mixer.music.play()
                             self.clicks += 1
                             if self.first_move:
                                 if block.is_bomb:
@@ -130,6 +132,8 @@ class Pysweeper:
                             self.board.reveal(mouse_x, mouse_y)
                         elif event.button == 1 and block.is_revealed \
                                 and self.jr_reveal:
+                            pg.mixer.music.load(load_file("sounds/plop.mp3"))
+                            pg.mixer.music.play()
                             self.clicks += 1
                             for i, j in itertools.product(range(-1, 2), range(-1, 2)):
                                 if (
