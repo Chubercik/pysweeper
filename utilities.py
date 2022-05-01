@@ -11,7 +11,8 @@ from sprites import Sprites, blit_sprite, game_offset, pg, screen
 sprites = Sprites().sprites
 
 
-num_to_str = {
+digit_to_str = {
+    0: "zero",
     1: "one",
     2: "two",
     3: "three",
@@ -19,7 +20,8 @@ num_to_str = {
     5: "five",
     6: "six",
     7: "seven",
-    8: "eight"
+    8: "eight",
+    9: "nine"
 }
 
 
@@ -54,7 +56,7 @@ class Block:
             elif self.is_flagged:
                 screen.blit(sprites["bomb_no"], self.get_position())
             elif self.number is not None and self.number != 0:
-                blit_sprite(sprites[num_to_str[self.number]],
+                blit_sprite(sprites[digit_to_str[self.number]],
                             (30, 30, 30),
                             self.get_position(),
                             screen)
@@ -248,20 +250,6 @@ class Smiley:
         return (self.x, self.y)
 
 
-clock_num_to_str = {
-    0: "clock_zero",
-    1: "clock_one",
-    2: "clock_two",
-    3: "clock_three",
-    4: "clock_four",
-    5: "clock_five",
-    6: "clock_six",
-    7: "clock_seven",
-    8: "clock_eight",
-    9: "clock_nine"
-}
-
-
 class Timer:
     def __init__(self, x: int, y: int) -> None:
         self.x = x
@@ -277,7 +265,7 @@ class Timer:
         wall.fill((170, 170, 170))
         screen.blit(wall, (self.x + 1, self.y + 1))
         if self.number is not None:
-            self.sprite = sprites[clock_num_to_str[self.number]]
+            self.sprite = sprites[f"clock_{digit_to_str[self.number]}"]
         if self.sprite:
             self.sprite = pg.transform.scale(self.sprite, (32, 64))
             screen.blit(self.sprite, (self.x, self.y))
