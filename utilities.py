@@ -11,6 +11,18 @@ from sprites import Sprites, blit_sprite, game_offset, pg, screen
 sprites = Sprites().sprites
 
 
+num_to_str = {
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+    6: "six",
+    7: "seven",
+    8: "eight"
+}
+
+
 class Block:
     def __init__(self) -> None:
         self.is_bomb = False
@@ -41,43 +53,8 @@ class Block:
                     screen.blit(sprites["bomb"], self.get_position())
             elif self.is_flagged:
                 screen.blit(sprites["bomb_no"], self.get_position())
-            elif self.number == 1:
-                blit_sprite(sprites["one"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 2:
-                blit_sprite(sprites["two"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 3:
-                blit_sprite(sprites["three"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 4:
-                blit_sprite(sprites["four"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 5:
-                blit_sprite(sprites["five"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 6:
-                blit_sprite(sprites["six"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 7:
-                blit_sprite(sprites["seven"],
-                            (30, 30, 30),
-                            self.get_position(),
-                            screen)
-            elif self.number == 8:
-                blit_sprite(sprites["eight"],
+            elif self.number is not None and self.number != 0:
+                blit_sprite(sprites[num_to_str[self.number]],
                             (30, 30, 30),
                             self.get_position(),
                             screen)
@@ -271,6 +248,20 @@ class Smiley:
         return (self.x, self.y)
 
 
+clock_num_to_str = {
+    0: "clock_zero",
+    1: "clock_one",
+    2: "clock_two",
+    3: "clock_three",
+    4: "clock_four",
+    5: "clock_five",
+    6: "clock_six",
+    7: "clock_seven",
+    8: "clock_eight",
+    9: "clock_nine"
+}
+
+
 class Timer:
     def __init__(self, x: int, y: int) -> None:
         self.x = x
@@ -285,26 +276,8 @@ class Timer:
         wall = pg.transform.scale(wall, (30, 62))
         wall.fill((170, 170, 170))
         screen.blit(wall, (self.x + 1, self.y + 1))
-        if self.number == 0:
-            self.sprite = sprites["clock_zero"]
-        elif self.number == 1:
-            self.sprite = sprites["clock_one"]
-        elif self.number == 2:
-            self.sprite = sprites["clock_two"]
-        elif self.number == 3:
-            self.sprite = sprites["clock_three"]
-        elif self.number == 4:
-            self.sprite = sprites["clock_four"]
-        elif self.number == 5:
-            self.sprite = sprites["clock_five"]
-        elif self.number == 6:
-            self.sprite = sprites["clock_six"]
-        elif self.number == 7:
-            self.sprite = sprites["clock_seven"]
-        elif self.number == 8:
-            self.sprite = sprites["clock_eight"]
-        elif self.number == 9:
-            self.sprite = sprites["clock_nine"]
+        if self.number is not None:
+            self.sprite = sprites[clock_num_to_str[self.number]]
         if self.sprite:
             self.sprite = pg.transform.scale(self.sprite, (32, 64))
             screen.blit(self.sprite, (self.x, self.y))
