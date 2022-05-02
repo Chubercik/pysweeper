@@ -4,7 +4,7 @@ from sys import exit
 
 from file_io import read_json, write_json
 from sprites import load_file
-from utilities import Board, Smiley, Timer, pg, screen
+from utilities import Board, Button, Smiley, Timer, pg, prompt_file, screen
 
 if platform.system() == "Windows":
     sys_name = "Windows"
@@ -58,6 +58,7 @@ class Pysweeper:
         self.score[0].number = (self.bombs // 100)
         self.score[1].number = ((self.bombs % 100) // 10)
         self.score[2].number = (self.bombs % 10)
+        self.button_test = Button(self.board.left_offset - 50, self.board.top_offset - 25, 100, 50)
         self.first_move = True
         self.play_sound = True
         self.new_highscore = True
@@ -81,6 +82,8 @@ class Pysweeper:
 
         input_arr = []
         cheat = False
+
+        font = pg.font.Font(load_file("fonts/minecraft_regular.ttf"), 32)
 
         while True:
             screen.fill((170, 170, 170))
@@ -166,6 +169,11 @@ class Pysweeper:
                        event.button == 1:
                         self.restart()
 
+                    if self.button_test.is_mouse_over(mouse_pos) and \
+                       event.button == 1:
+                        self.button_test.button_clicked = clock.get_fps()//20
+                        print(prompt_file(load_file("icon.ico")))
+
                 if event.type == pg.KEYDOWN:
                     if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):
                         input_arr.append("shift")
@@ -185,7 +193,6 @@ class Pysweeper:
                 if event.type == pg.VIDEORESIZE:
                     self.resize()
 
-            font = pg.font.Font(load_file("fonts/minecraft_regular.ttf"), 32)
             text = font.render("".join(input_arr), True, (0, 0, 0))
             screen.blit(text, (50, 750))
 
@@ -219,6 +226,16 @@ class Pysweeper:
                 self.timer[0].number = (int(self.time) // 100)
                 self.timer[1].number = ((int(self.time) % 100) // 10)
                 self.timer[2].number = (int(self.time) % 10)
+
+            if self.button_test.button_clicked > 0:
+                self.button_test.draw(screen, "test",
+                                      (0, 0, 0), (255, 255, 255),
+                                      font)
+                self.button_test.button_clicked -= 1
+            else:
+                self.button_test.draw(screen, "test",
+                                      (255, 255, 255), (0, 0, 0),
+                                      font)
 
             clock.tick(60)
 

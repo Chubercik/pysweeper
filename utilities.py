@@ -1,6 +1,6 @@
 import itertools
 import random
-import tkinter
+import tkinter as tk
 import tkinter.filedialog
 from typing import List, Optional, Tuple
 
@@ -278,9 +278,48 @@ class Timer:
         return (self.x, self.y)
 
 
-def prompt_file() -> str:
-    top = tkinter.Tk()
+class Button:
+    def __init__(self, x: int, y: int, width: int, height: int) -> None:
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.button_clicked = 0
+
+    def draw(self,
+             screen: pg.surface.Surface,
+             text: str,
+             text_color: Tuple[int, int, int],
+             button_color: Tuple[int, int, int],
+             font: pg.font.Font) -> None:
+        button_text = font.render(text, True, text_color)
+        pg.draw.rect(screen,
+                     button_color,
+                     [self.x, self.y,
+                      self.width, self.height])
+        screen.blit(button_text,
+                    (self.x + self.width//2 - button_text.get_width()//2,
+                     self.y + self.height//2 - button_text.get_height()//2))
+
+    def is_mouse_over(self, mouse_pos: Tuple[int, int]) -> bool:
+        return (mouse_pos[0] >= self.x and
+                mouse_pos[0] <= self.x + self.width and
+                mouse_pos[1] >= self.y and
+                mouse_pos[1] <= self.x + self.height)
+
+    def set_position(self, x: int, y: int) -> None:
+        self.x = x
+        self.y = y
+
+    def get_position(self) -> Tuple[int, int]:
+        return (self.x, self.y)
+
+
+def prompt_file(icon_path: Optional[str] = None) -> str:
+    top = tk.Tk()
     top.withdraw()  # hide window
+    if icon_path:
+        top.iconbitmap(tk.PhotoImage(icon_path))
     file_name = tkinter.filedialog.askopenfilename(parent=top)
     top.destroy()
     return file_name
