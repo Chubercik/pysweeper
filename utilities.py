@@ -1,9 +1,10 @@
 import itertools
 import random
 import tkinter as tk
-import tkinter.filedialog
+from tkinter import filedialog, ttk
 from typing import List, Optional, Tuple
 
+import webview
 from PIL import Image
 
 from sprites import Sprites, blit_sprite, game_offset, pg, screen
@@ -318,11 +319,50 @@ class Button:
 def prompt_file(icon_path: Optional[str] = None) -> str:
     top = tk.Tk()
     top.withdraw()  # hide window
+
+    """
+    root.option_add('*foreground', 'red')  # set all tk widgets' foreground to red
+    root.option_add('*activeForeground', 'red')  # set all tk widgets' foreground to red
+
+    style = ttk.Style(root)
+    style.configure('TLabel', foreground='red')
+    style.configure('TEntry', foreground='red')
+    style.configure('TMenubutton', foreground='red')
+    style.configure('TButton', foreground='red')
+    filedialog.askopenfilename(master=root, filetypes=[('*', '*'), ('PNG', '*.png')])
+    root.mainloop()
+
+    Also, if you want to target the file/folder list specifically, you can use the patterns *TkFDialog*foreground and *TkChooseDir*foreground
+    """
+
+    top.option_add("*foreground", "black")
+
+    style = ttk.Style(top)
+
     if icon_path:
         top.iconbitmap(tk.PhotoImage(icon_path))
-    file_name = tkinter.filedialog.askopenfilename(parent=top)
+    else:
+        top.iconwindow()
+
+    file_name = filedialog.askopenfilename(parent=top, filetypes=[("JSON", "*.json")])
     top.destroy()
     return file_name
+
+
+def webview_file_dialog():
+    file = None
+    def open_file_dialog(w):
+        nonlocal file
+        try:
+            file = w.create_file_dialog(webview.OPEN_DIALOG)[0]
+        except TypeError:
+            pass  # user exited file dialog without picking
+        finally:
+            w.destroy()
+    window = webview.create_window("", hidden=True)
+    webview.start(open_file_dialog, window)
+    # file will either be a string or None
+    return file
 
 
 def png_to_ico(inp: str = "textures/icon.png", out: str = "icon.ico") -> None:
