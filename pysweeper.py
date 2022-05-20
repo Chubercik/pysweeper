@@ -4,8 +4,7 @@ from sys import exit
 
 from file_io import read_json, write_json
 from sprites import load_file
-from utilities import (Board, Button, Smiley, Timer, pg, prompt_file, screen,
-                       webview_file_dialog)
+from utilities import Board, Button, Smiley, Timer, pg, prompt_file, screen
 
 if platform.system() == "Windows":
     sys_name = "Windows"
@@ -174,7 +173,6 @@ class Pysweeper:
                        event.button == 1:
                         self.button_test.button_clicked = clock.get_fps()//20
                         print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
-                        # print(webview_file_dialog())
 
                 if event.type == pg.KEYDOWN:
                     if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):
