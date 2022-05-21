@@ -305,7 +305,7 @@ class Button:
         return (mouse_pos[0] >= self.x and
                 mouse_pos[0] <= self.x + self.width and
                 mouse_pos[1] >= self.y and
-                mouse_pos[1] <= self.x + self.height)
+                mouse_pos[1] <= self.y + self.height)
 
     def set_position(self, x: int, y: int) -> None:
         self.x = x

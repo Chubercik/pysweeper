@@ -59,6 +59,7 @@ class Pysweeper:
         self.score[1].number = ((self.bombs % 100) // 10)
         self.score[2].number = (self.bombs % 10)
         self.button_test = Button(self.board.left_offset - 50, self.board.top_offset - 25, 100, 50)
+        self.button_1 = Button(self.board.left_offset - 50, self.board.top_offset + 30, 100, 50)
         self.first_move = True
         self.play_sound = True
         self.new_highscore = True
@@ -172,7 +173,15 @@ class Pysweeper:
                     if self.button_test.is_mouse_over(mouse_pos) and \
                        event.button == 1:
                         self.button_test.button_clicked = clock.get_fps()//20
-                        print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
+                        # print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
+                        # print("file")
+                        input_arr = ['f', 'i', 'l', 'e']
+
+                    if self.button_1.is_mouse_over(mouse_pos) and \
+                       event.button == 1:
+                        self.button_1.button_clicked = clock.get_fps()//20
+                        # print('1')
+                        input_arr = ['1']
 
                 if event.type == pg.KEYDOWN:
                     if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):
@@ -236,6 +245,16 @@ class Pysweeper:
                 self.button_test.draw(screen, "test",
                                       (255, 255, 255), (0, 0, 0),
                                       font)
+
+            if self.button_1.button_clicked > 0:
+                self.button_1.draw(screen, "1",
+                                   (0, 0, 0), (255, 255, 255),
+                                   font)
+                self.button_1.button_clicked -= 1
+            else:
+                self.button_1.draw(screen, "1",
+                                   (255, 255, 255), (0, 0, 0),
+                                   font)
 
             clock.tick(60)
 
