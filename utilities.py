@@ -294,6 +294,10 @@ class Button:
              font: pg.font.Font) -> None:
         button_text = font.render(text, True, text_color)
         pg.draw.rect(screen,
+                     (150, 50, 30),
+                     [self.x - 2, self.y - 2,
+                      self.width + 4, self.height + 4])
+        pg.draw.rect(screen,
                      button_color,
                      [self.x, self.y,
                       self.width, self.height])

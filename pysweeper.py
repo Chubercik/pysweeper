@@ -58,8 +58,10 @@ class Pysweeper:
         self.score[0].number = (self.bombs // 100)
         self.score[1].number = ((self.bombs % 100) // 10)
         self.score[2].number = (self.bombs % 10)
-        self.button_test = Button(self.board.left_offset - 50, self.board.top_offset - 25, 100, 50)
-        self.button_1 = Button(self.board.left_offset - 50, self.board.top_offset + 30, 100, 50)
+        self.button_test = Button(self.board.left_offset - 125, self.board.top_offset, 100, 50)
+        self.button_1 = Button(self.board.left_offset - 125, self.board.top_offset + 55, 100, 50)
+        self.button_2 = Button(self.board.left_offset - 125, self.board.top_offset + 110, 100, 50)
+        self.button_3 = Button(self.board.left_offset - 125, self.board.top_offset + 165, 100, 50)
         self.first_move = True
         self.play_sound = True
         self.new_highscore = True
@@ -115,6 +117,9 @@ class Pysweeper:
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                     self.smiley.set_in_awe()
+                    if self.button_test.is_mouse_over(mouse_pos) and \
+                       event.button == 1:
+                        self.button_test.button_clicked = 1
 
                 if event.type == pg.MOUSEBUTTONUP:
                     self.smiley.set_reset()
@@ -172,7 +177,8 @@ class Pysweeper:
 
                     if self.button_test.is_mouse_over(mouse_pos) and \
                        event.button == 1:
-                        self.button_test.button_clicked = clock.get_fps()//20
+                        self.button_test.button_clicked = 0
+                        # self.button_test.button_clicked = clock.get_fps()//20
                         # print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
                         # print("file")
                         input_arr = ['f', 'i', 'l', 'e']
@@ -182,6 +188,18 @@ class Pysweeper:
                         self.button_1.button_clicked = clock.get_fps()//20
                         # print('1')
                         input_arr = ['1']
+
+                    if self.button_2.is_mouse_over(mouse_pos) and \
+                       event.button == 1:
+                        self.button_2.button_clicked = clock.get_fps()//20
+                        # print('2')
+                        input_arr = ['2']
+
+                    if self.button_3.is_mouse_over(mouse_pos) and \
+                       event.button == 1:
+                        self.button_3.button_clicked = clock.get_fps()//20
+                        # print('3')
+                        input_arr = ['3']
 
                 if event.type == pg.KEYDOWN:
                     if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):
@@ -203,7 +221,7 @@ class Pysweeper:
                     self.resize()
 
             text = font.render("".join(input_arr), True, (0, 0, 0))
-            screen.blit(text, (50, 750))
+            screen.blit(text, (self.board.left_offset - 125, self.board.top_offset + self.board.height*32 + 50))
 
             self.board.check_win()
 
@@ -240,19 +258,39 @@ class Pysweeper:
                 self.button_test.draw(screen, "test",
                                       (0, 0, 0), (255, 255, 255),
                                       font)
-                self.button_test.button_clicked -= 1
+                # self.button_test.button_clicked -= 1
             else:
                 self.button_test.draw(screen, "test",
                                       (255, 255, 255), (0, 0, 0),
                                       font)
 
             if self.button_1.button_clicked > 0:
-                self.button_1.draw(screen, "1",
+                self.button_1.draw(screen, '1',
                                    (0, 0, 0), (255, 255, 255),
                                    font)
                 self.button_1.button_clicked -= 1
             else:
-                self.button_1.draw(screen, "1",
+                self.button_1.draw(screen, '1',
+                                   (255, 255, 255), (0, 0, 0),
+                                   font)
+
+            if self.button_2.button_clicked > 0:
+                self.button_2.draw(screen, '2',
+                                   (0, 0, 0), (255, 255, 255),
+                                   font)
+                self.button_2.button_clicked -= 1
+            else:
+                self.button_2.draw(screen, '2',
+                                   (255, 255, 255), (0, 0, 0),
+                                   font)
+
+            if self.button_3.button_clicked > 0:
+                self.button_3.draw(screen, '3',
+                                   (0, 0, 0), (255, 255, 255),
+                                   font)
+                self.button_3.button_clicked -= 1
+            else:
+                self.button_3.draw(screen, '3',
                                    (255, 255, 255), (0, 0, 0),
                                    font)
 
@@ -290,6 +328,10 @@ class Pysweeper:
         self.smiley = Smiley(x=(self.board.left_offset - 32
                                 + 32*self.width//2),
                              y=(self.board.top_offset - 64))
+        self.button_test.set_position(self.board.left_offset - 125, self.board.top_offset)
+        self.button_1.set_position(self.board.left_offset - 125, self.board.top_offset + 55)
+        self.button_2.set_position(self.board.left_offset - 125, self.board.top_offset + 110)
+        self.button_3.set_position(self.board.left_offset - 125, self.board.top_offset + 165)
         self.set_digit_displays()
         self.update_score()
         self.board.window_resize()
