@@ -58,10 +58,18 @@ class Pysweeper:
         self.score[0].number = (self.bombs // 100)
         self.score[1].number = ((self.bombs % 100) // 10)
         self.score[2].number = (self.bombs % 10)
-        self.button_test = Button(self.board.left_offset - 125, self.board.top_offset, 100, 50)
-        self.button_1 = Button(self.board.left_offset - 125, self.board.top_offset + 55, 100, 50)
-        self.button_2 = Button(self.board.left_offset - 125, self.board.top_offset + 110, 100, 50)
-        self.button_3 = Button(self.board.left_offset - 125, self.board.top_offset + 165, 100, 50)
+        self.button_test = Button(self.board.left_offset - 125,
+                                  self.board.top_offset,
+                                  100, 50)
+        self.button_1 = Button(self.board.left_offset - 125,
+                               self.board.top_offset + 55,
+                               100, 50)
+        self.button_2 = Button(self.board.left_offset - 125,
+                               self.board.top_offset + 110,
+                               100, 50)
+        self.button_3 = Button(self.board.left_offset - 125,
+                               self.board.top_offset + 165,
+                               100, 50)
         self.first_move = True
         self.play_sound = True
         self.new_highscore = True
@@ -179,27 +187,23 @@ class Pysweeper:
                        event.button == 1:
                         self.button_test.button_clicked = 0
                         # self.button_test.button_clicked = clock.get_fps()//20
-                        # print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
-                        # print("file")
-                        input_arr = ['f', 'i', 'l', 'e']
+                        print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
+                        input_arr.append("file")
 
                     if self.button_1.is_mouse_over(mouse_pos) and \
                        event.button == 1:
                         self.button_1.button_clicked = clock.get_fps()//20
-                        # print('1')
-                        input_arr = ['1']
+                        input_arr.append('1')
 
                     if self.button_2.is_mouse_over(mouse_pos) and \
                        event.button == 1:
                         self.button_2.button_clicked = clock.get_fps()//20
-                        # print('2')
-                        input_arr = ['2']
+                        input_arr.append('2')
 
                     if self.button_3.is_mouse_over(mouse_pos) and \
                        event.button == 1:
                         self.button_3.button_clicked = clock.get_fps()//20
-                        # print('3')
-                        input_arr = ['3']
+                        input_arr.append('3')
 
                 if event.type == pg.KEYDOWN:
                     if event.key in (pg.K_LSHIFT, pg.K_RSHIFT):

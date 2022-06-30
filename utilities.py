@@ -4,9 +4,13 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from typing import List, Optional, Tuple
 
+# import customtkinter as ctk
 from PIL import Image
 
 from sprites import Sprites, blit_sprite, game_offset, pg, screen
+
+# ctk.set_appearance_mode("dark")
+# ctk.set_default_color_theme("dark-blue")
 
 sprites = Sprites().sprites
 
