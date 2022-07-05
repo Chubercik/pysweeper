@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <h5 align="center" style="background-color: tomato">Work In Progress</h5>
+  <h5 align="center">⚠ Work In Progress ⚠</h5>
 </p>
 
 **Pysweeper** (onward stylized as `pysweeper` and pronounced `paɪˈswiːpə`) is a clone
