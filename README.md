@@ -27,6 +27,28 @@ Linux binaries have been discontinued due to their large size,
 but you can still download the source code and compile it yourself,
 if for whatever reason you might feel like it.
 
+## Project structure
+
+    .
+    ├── data                     # folder containing game data
+    │   ├── config.json          # game configuration
+    │   └── data.json            # player scores
+    ├── fonts                    # folder containing font files
+    ├── modules                  # folder containing DLL files for Nuitka
+    ├── sounds                   # folder containing sound files
+    ├── textures                 # folder containing texture files
+    ├── .gitignore               # ignore list for git
+    ├── file_io.py               # script containing file I/O
+    ├── icon.ico                 # icon for the game
+    ├── LICENSE                  # MIT license
+    ├── main.py                  # main script
+    ├── nuitka.txt               # file containing Nuitka commands
+    ├── pysweeper.py             # pysweeper game script
+    ├── README.md                # README file
+    ├── requirements.txt         # project dependencies
+    ├── sprites.py               # script for sprite loading
+    └── utilities.py             # script containing utility functions
+
 ## Building
 
 // todo

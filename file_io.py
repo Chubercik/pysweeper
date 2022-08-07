@@ -15,3 +15,11 @@ def write_json(file_name: str, data: dict, indent: int = 4) -> None:
     """
     with open(file_name, 'w') as f:
         json.dump(data, f, indent=indent)
+
+
+def main() -> None:
+    pass
+
+
+if __name__ == "__main__":
+    main()

@@ -373,7 +373,7 @@ class Pysweeper:
         self.score[2].number = ((((self.bombs - self.flags)) % 10))
 
 
-def main():
+def main() -> None:
     pass
 
 

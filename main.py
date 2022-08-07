@@ -3,7 +3,7 @@ from pysweeper import Pysweeper
 from sprites import load_file
 
 
-def main():
+def main() -> None:
     game_settings = read_json(load_file("data/config.json"))
     game = Pysweeper(game_settings["width"],
                      game_settings["height"],

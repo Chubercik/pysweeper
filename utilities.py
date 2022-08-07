@@ -346,7 +346,7 @@ def png_to_ico(inp: str = "textures/icon.png", out: str = "icon.ico") -> None:
     img.save(out, sizes=icon_sizes)
 
 
-def main():
+def main() -> None:
     pass
 
 

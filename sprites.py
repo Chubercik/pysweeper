@@ -78,7 +78,7 @@ class Sprites:
         self.sprites = dict(image_loader(sprites_folder_path))
 
 
-def main():
+def main() -> None:
     pass
 
 
