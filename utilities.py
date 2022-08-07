@@ -4,13 +4,10 @@ import tkinter as tk
 from tkinter import filedialog, ttk
 from typing import List, Optional, Tuple
 
-# import customtkinter as ctk
-from PIL import Image
+from PIL import Image  # type: ignore
 
 from sprites import Sprites, blit_sprite, game_offset, pg, screen
 
-# ctk.set_appearance_mode("dark")
-# ctk.set_default_color_theme("dark-blue")
 
 sprites = Sprites().sprites
 
@@ -326,21 +323,6 @@ class Button:
 def prompt_file(icon_path: Optional[str] = None) -> str:
     top = tk.Tk()
     top.withdraw()  # hide window
-
-    """
-    root.option_add('*foreground', 'red')  # set all tk widgets' foreground to red
-    root.option_add('*activeForeground', 'red')  # set all tk widgets' foreground to red
-
-    style = ttk.Style(root)
-    style.configure('TLabel', foreground='red')
-    style.configure('TEntry', foreground='red')
-    style.configure('TMenubutton', foreground='red')
-    style.configure('TButton', foreground='red')
-    filedialog.askopenfilename(master=root, filetypes=[('*', '*'), ('PNG', '*.png')])
-    root.mainloop()
-
-    Also, if you want to target the file/folder list specifically, you can use the patterns *TkFDialog*foreground and *TkChooseDir*foreground
-    """
 
     top.option_add("*foreground", "black")
 

@@ -192,17 +192,17 @@ class Pysweeper:
 
                     if self.button_1.is_mouse_over(mouse_pos) and \
                        event.button == 1:
-                        self.button_1.button_clicked = clock.get_fps()//20
+                        self.button_1.button_clicked = int(clock.get_fps()//20)
                         input_arr.append('1')
 
                     if self.button_2.is_mouse_over(mouse_pos) and \
                        event.button == 1:
-                        self.button_2.button_clicked = clock.get_fps()//20
+                        self.button_2.button_clicked = int(clock.get_fps()//20)
                         input_arr.append('2')
 
                     if self.button_3.is_mouse_over(mouse_pos) and \
                        event.button == 1:
-                        self.button_3.button_clicked = clock.get_fps()//20
+                        self.button_3.button_clicked = int(clock.get_fps()//20)
                         input_arr.append('3')
 
                 if event.type == pg.KEYDOWN:
