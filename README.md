@@ -56,3 +56,16 @@ if for whatever reason you might feel like it.
 ## Contributing
 
 // todo
+
+<!--
+TODO - refactoring:
+
+utilities.py | WIP - refactor fundamental classes,
+                     add complex classes (e.g. full Timer class,
+                     as opposed to just one digit)
+sprites.py   | OK (for the time being)
+pysweeper.py | WIP - a lot of things need to be refactored
+main.py      | WIP - change the way the game is initialized
+file_io.py   | OK 
+
+-->
