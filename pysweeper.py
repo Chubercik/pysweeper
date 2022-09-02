@@ -187,8 +187,14 @@ class Pysweeper:
                        event.button == 1:
                         self.button_test.button_clicked = 0
                         # self.button_test.button_clicked = clock.get_fps()//20
-                        print(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None)))
-                        input_arr.append("file")
+
+                        # horrible practice, but at least
+                        # it'll stop the game from crashing
+                        # FIX THIS LATER
+                        try:
+                            input_arr.extend(str(read_json(prompt_file(load_file("icon.ico") if sys_name == "Windows" else None))))
+                        except Exception as e:
+                            print(e)
 
                     if self.button_1.is_mouse_over(mouse_pos) and \
                        event.button == 1:
