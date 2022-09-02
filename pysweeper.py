@@ -222,6 +222,11 @@ class Pysweeper:
                         input_arr = []
 
                 if event.type == pg.VIDEORESIZE:
+                    # disallow resizing to smaller
+                    # dimensions than the board size
+                    self.screen = pg.display.set_mode((max(event.w, self.width*32),
+                                                       max(event.h, self.height*32)),
+                                                      pg.RESIZABLE)
                     self.resize()
 
             text = font.render("".join(input_arr), True, (0, 0, 0))
