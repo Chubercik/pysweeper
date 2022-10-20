@@ -137,11 +137,9 @@ class Board:
             if (
                 0 <= x + i < self.width
                 and 0 <= y + j < self.height
-                and self.board[y + j][x + i].is_bomb
             ):
                 self.board[y + j][x + i].number -= 1
-                if self.board[y + j][x + i].is_bomb:
-                    self.board[y][x].number += 1
+        self.board[y][x].number += 1
         i = random.randint(0, len(self.empty_tiles) - 1)
         x = self.empty_tiles[i][0]
         y = self.empty_tiles[i][1]
