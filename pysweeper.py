@@ -86,6 +86,21 @@ class Pysweeper:
                             flags=pg.RESIZABLE,
                             vsync=True)
 
+        ###
+        import pygame_gui
+        from pygame_gui.core import ObjectID
+        from pygame_gui.elements import UIButton
+
+        manager = pygame_gui.UIManager((32*self.width + 2*self.board.left_offset,
+                                        32*self.height + 2*self.board.top_offset))
+
+        hello_button = UIButton(relative_rect=pg.Rect((self.board.left_offset - 125, self.board.top_offset + 220), (100, 50)),
+                                text='Hello',
+                                manager=manager,
+                                object_id=ObjectID(class_id='@friendly_buttons',
+                                                   object_id='#hello_button'))
+        ###
+
         clock = pg.time.Clock()
 
         if sys_name == "Windows":
@@ -235,6 +250,15 @@ class Pysweeper:
                                                       pg.RESIZABLE)
                     self.resize()
 
+                ###
+                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                    if event.ui_element == hello_button:
+                        print('Hello World!')
+                        input_arr.extend("Hello World!")
+
+                manager.process_events(event)
+                ###
+
             text = font.render("".join(input_arr), True, (0, 0, 0))
             screen.blit(text, (self.board.left_offset - 125, self.board.top_offset + self.board.height*32 + 50))
 
@@ -309,7 +333,16 @@ class Pysweeper:
                                    (255, 255, 255), (0, 0, 0),
                                    font)
 
-            clock.tick(60)
+            # clock.tick(60)
+
+            ###
+            pg.display.set_caption(f"pysweeper {clock.get_fps():.2f}")
+
+            time_delta = clock.tick(60)/1000.0
+            manager.update(time_delta)
+
+            manager.draw_ui(screen)
+            ###
 
             pg.display.update()
 
