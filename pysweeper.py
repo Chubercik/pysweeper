@@ -87,18 +87,16 @@ class Pysweeper:
                             vsync=True)
 
         ###
-        import pygame_gui
-        from pygame_gui.core import ObjectID
-        from pygame_gui.elements import UIButton
+        import pygame_gui as pgui
 
-        manager = pygame_gui.UIManager((32*self.width + 2*self.board.left_offset,
-                                        32*self.height + 2*self.board.top_offset))
+        manager = pgui.UIManager((32*self.width + 2*self.board.left_offset,
+                                  32*self.height + 2*self.board.top_offset))
 
-        hello_button = UIButton(relative_rect=pg.Rect((self.board.left_offset - 125, self.board.top_offset + 220), (100, 50)),
-                                text='Hello',
-                                manager=manager,
-                                object_id=ObjectID(class_id='@friendly_buttons',
-                                                   object_id='#hello_button'))
+        hello_button = pgui.elements.UIButton(relative_rect=pg.Rect((self.board.left_offset - 125, self.board.top_offset + 220), (-1, 50)),
+                                              text="Hello World",
+                                              manager=manager,
+                                              object_id=pgui.core.ObjectID(class_id="@friendly_buttons",
+                                              object_id="#hello_button"))
         ###
 
         clock = pg.time.Clock()
@@ -251,9 +249,8 @@ class Pysweeper:
                     self.resize()
 
                 ###
-                if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.type == pgui.UI_BUTTON_PRESSED:
                     if event.ui_element == hello_button:
-                        print('Hello World!')
                         input_arr.extend("Hello World!")
 
                 manager.process_events(event)
